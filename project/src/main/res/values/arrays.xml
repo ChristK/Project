@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="location">
+        <item>All</item>
+        <item>Liverpool</item>
+        <item>London</item>
+        <item>Manchester</item>
+        <item>Edinburgh</item>
+        <item>Bath</item>
+        <item>Glasgow</item>
+        <item>Birmingham</item>
+        <item>York</item>
+        <item>Leeds</item>
+        <item>Reading</item>
+        <item>Cardiff</item>
+        <item>Belfast</item>
+        <item>Oxford</item>
+        <item>Cambridge</item>
+    </string-array>
+
+    <string-array name="detail">
+        <item>My post</item>
+        <item>My content</item>
+        <item>Setting</item>
+        <item>About</item>
+    </string-array>
+</resources>
