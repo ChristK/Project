@@ -21,7 +21,7 @@
     <string-array name="detail">
         <item>My post</item>
         <item>My content</item>
-        <item>Setting</item>
         <item>About</item>
+        <item>Logout</item>
     </string-array>
 </resources>

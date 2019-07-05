@@ -59,22 +59,27 @@ public class MainActivity extends AppCompatActivity {
 
 
         //logout
+/**
+ *   logout.setOnClickListener(new View.OnClickListener() {
+ *             @Override
+ *             public void onClick(View v) {
+ *                 sp.setLogin(false);
+ *
+ *                 Intent intent=new Intent(MainActivity.this,LoginActivity.class);
+ *                 startActivity(intent);
+ *
+ *                 finish();
+ *             }
+ *         });
+ */
 
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sp.setLogin(false);
-
-                Intent intent=new Intent(MainActivity.this,LoginActivity.class);
-                startActivity(intent);
-
-                finish();
-            }
-        });
         //
         home.setOnClickListener(onClickListener);
         user.setOnClickListener(onClickListener);
 
+    }
+    public void logout(){
+        sp.setLogin(false);
     }
 
     private void initFragment() {
@@ -96,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
         home=(ImageView)findViewById(R.id.homepage);
         user=(ImageView)findViewById(R.id.userpage);
 
-        logout=(Button)findViewById(R.id.logout);
     }
 
 

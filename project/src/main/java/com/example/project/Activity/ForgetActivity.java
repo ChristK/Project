@@ -76,6 +76,8 @@ public class ForgetActivity extends AppCompatActivity {
                     Toast.makeText(ForgetActivity.this,"Password Change Successful!",Toast.LENGTH_SHORT).show();
                     Intent intent=new Intent(ForgetActivity.this,LoginActivity.class);
                     startActivity(intent);
+
+                    finish();
                 }
 
                 database.close();

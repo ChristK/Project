@@ -50,6 +50,7 @@ public class RegisterActivity extends AppCompatActivity {
         switch (view.getId()){
             case R.id.register:
                 insertUser();
+                break;
 
         }
     }

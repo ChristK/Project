@@ -27,7 +27,7 @@ tools:context=".Fragment.MainFragment">
         android:id="@+id/plus"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@drawable/plus" />
+        android:background="@drawable/search" />
 
 </LinearLayout>
 

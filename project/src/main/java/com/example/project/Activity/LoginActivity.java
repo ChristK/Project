@@ -46,9 +46,6 @@ public class LoginActivity extends AppCompatActivity {
         //init control
         initControl();
 
-
-
-
     }
 
     public void Operator(View view) {
@@ -83,8 +80,9 @@ public class LoginActivity extends AppCompatActivity {
         {
             sp.setLogin(true);
             Toast.makeText(LoginActivity.this,"Login Successful! \n Welcome "+ username_input,Toast.LENGTH_SHORT).show();
-            Intent intent_login=new Intent(LoginActivity.this,MainActivity.class);
-            startActivity(intent_login);
+            startActivity(new Intent(LoginActivity.this,MainActivity.class));
+            //Bundle bundle=new Bundle();
+            //bundle.putCharSequence("Username",username_input);
 
             finish();
         }
