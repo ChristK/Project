@@ -57,23 +57,6 @@ public class MainActivity extends AppCompatActivity {
         //default Fragment
         defaultFragment();
 
-
-        //logout
-/**
- *   logout.setOnClickListener(new View.OnClickListener() {
- *             @Override
- *             public void onClick(View v) {
- *                 sp.setLogin(false);
- *
- *                 Intent intent=new Intent(MainActivity.this,LoginActivity.class);
- *                 startActivity(intent);
- *
- *                 finish();
- *             }
- *         });
- */
-
-        //
         home.setOnClickListener(onClickListener);
         user.setOnClickListener(onClickListener);
 
