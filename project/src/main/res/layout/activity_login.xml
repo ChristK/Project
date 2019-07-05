@@ -21,15 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp">
 
-        <TextView
-            android:id="@+id/user"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/username"
-            android:inputType="text"
-            android:layout_alignBaseline="@+id/username"
-            android:textSize="15sp"
-            />
+
 
         <EditText
             android:id="@+id/username"
@@ -38,14 +30,6 @@
             android:layout_toRightOf="@+id/user"
             android:hint="Username" />
 
-        <TextView
-            android:id="@+id/pass"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:layout_below="@+id/username"
-            android:layout_alignBaseline="@+id/password"
-            android:text="@string/password" />
 
         <EditText
             android:id="@+id/password"
@@ -61,7 +45,7 @@
 
 
     <Button
-        android:id="@+id/submit"
+        android:id="@+id/login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

@@ -21,30 +21,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp">
 
-        <TextView
-            android:id="@+id/user"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/username"
-            android:layout_alignBaseline="@+id/username"
-            android:textSize="15sp"
-            />
-
         <EditText
             android:id="@+id/username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/user"
+            android:inputType="text"
             android:hint="Username" />
 
-        <TextView
-            android:id="@+id/pass"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:layout_below="@+id/username"
-            android:layout_alignBaseline="@+id/password"
-            android:text="@string/password" />
+
 
         <EditText
             android:id="@+id/password"
@@ -55,16 +40,8 @@
             android:layout_alignLeft="@+id/username"
             android:inputType="textPassword"
             android:layout_marginTop="20dp"
-            android:hint="Enter your Password"/>
+            android:hint="Password"/>
 
-        <TextView
-            android:id="@+id/email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:layout_below="@+id/password"
-            android:layout_alignBaseline="@+id/email_ed"
-            android:text="@string/email" />
 
         <EditText
             android:id="@+id/email_ed"
@@ -73,8 +50,9 @@
             android:layout_below="@+id/password"
             android:layout_toRightOf="@+id/email"
             android:layout_alignLeft="@+id/password"
+            android:inputType="textEmailAddress"
             android:layout_marginTop="20dp"
-            android:hint="Enter your Email"/>
+            android:hint="Email"/>
 
     </RelativeLayout>
     <Button

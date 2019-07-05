@@ -17,14 +17,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_alignBaseline="@+id/user"
-            android:textSize="18sp"
-            android:text="Username:" />
+
 
         <EditText
             android:id="@+id/user"
@@ -33,45 +26,26 @@
             android:layout_toRightOf="@+id/username"
             android:layout_marginTop="20dp"
             android:layout_alignLeft="@+id/renew_pass"
-            android:hint="Enter your new username"/>
+            android:hint="Username"/>
 
-        <TextView
-            android:id="@+id/new_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/username"
-            android:layout_alignBaseline="@+id/new_pass"
-            android:textSize="18sp"
-            android:text="New Password:" />
+
 
         <EditText
             android:id="@+id/new_pass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/new_password"
             android:layout_below="@+id/user"
             android:layout_marginTop="20dp"
             android:layout_alignLeft="@+id/renew_pass"
-            android:hint="Enter your new Password"/>
-
-        <TextView
-            android:id="@+id/renew_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:layout_gravity="center_vertical"
-            android:layout_below="@+id/new_pass"
-            android:layout_alignBaseline="@+id/renew_pass"
-            android:text="Re-Enter Password:" />
+            android:hint="Password"/>
 
         <EditText
             android:id="@+id/renew_pass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/renew_password"
             android:layout_marginTop="20dp"
             android:layout_below="@+id/new_pass"
-            android:hint="Re-enter your Password "/>
+            android:hint="Comfirm Password "/>
     </RelativeLayout>
 
     <Button

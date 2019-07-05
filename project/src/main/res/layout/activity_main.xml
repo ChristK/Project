@@ -14,7 +14,16 @@
         android:layout_above="@+id/tag"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
+
+
     </FrameLayout>
+
+    <Button
+        android:id="@+id/logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tag"
+        android:text="Button" />
 
     <LinearLayout
         android:id="@+id/tag"

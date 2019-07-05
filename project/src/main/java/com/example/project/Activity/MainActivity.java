@@ -37,7 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageView home;
     private ImageView user;
 
-    //private Button logout;
+
+    private Button logout;
     private SharedPerencesUtil sp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //logout
-        /**
+
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
-        **/
         //
         home.setOnClickListener(onClickListener);
         user.setOnClickListener(onClickListener);
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         home=(ImageView)findViewById(R.id.homepage);
         user=(ImageView)findViewById(R.id.userpage);
 
-       // logout=(Button)findViewById(R.id.button);
+        logout=(Button)findViewById(R.id.logout);
     }
 
 

@@ -21,6 +21,12 @@ public class ForgetActivity extends AppCompatActivity {
     private EditText new_password;
     private EditText renew_password;
     private Button button;
+
+    /**
+     * Table name
+     */
+    public static final String DATABASE_USER_TABLE="table_user";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +50,7 @@ public class ForgetActivity extends AppCompatActivity {
         SQliteDB sQliteDB=new SQliteDB(ForgetActivity.this);
         SQLiteDatabase database=sQliteDB.getReadableDatabase();
         username_input=username.getText().toString().trim();
-        Cursor cursor=database.query("UserInfo", new String[]{"username"}, "username=?", new String[]{username_input}, null, null, null);
+        Cursor cursor=database.query(DATABASE_USER_TABLE, new String[]{"username"}, "username=?", new String[]{username_input}, null, null, null);
 
         if(cursor.getCount()!=0){
             return true;
@@ -65,7 +71,7 @@ public class ForgetActivity extends AppCompatActivity {
                 //Change value
                 ContentValues values=new ContentValues();
                 values.put("Password", newpassword_input);
-                int line=database.update("UserInfo",values,"Username=?",new String[]{username_input});
+                int line=database.update(DATABASE_USER_TABLE,values,"Username=?",new String[]{username_input});
                 if(line>0){
                     Toast.makeText(ForgetActivity.this,"Password Change Successful!",Toast.LENGTH_SHORT).show();
                     Intent intent=new Intent(ForgetActivity.this,LoginActivity.class);
@@ -73,6 +79,8 @@ public class ForgetActivity extends AppCompatActivity {
                 }
 
                 database.close();
+            }else {
+                Toast.makeText(ForgetActivity.this,"Username is not Exist!",Toast.LENGTH_SHORT).show();
             }
 
         }else {
