@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.project.Activity.CommentActivity;
+import com.example.project.Activity.MainActivity;
 import com.example.project.Activity.PostActivity;
 import com.example.project.Activity.SetActivity;
 import com.example.project.R;
@@ -22,12 +23,13 @@ import com.example.project.Util.SharedPerencesUtil;
  */
 public class UserFragment extends Fragment {
 
+    private TextView username;
     private Button set;
     private TextView post;
     private TextView comment;
     private SharedPerencesUtil sp;
 
-
+    public static final String KEY="Username";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,7 +38,6 @@ public class UserFragment extends Fragment {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_user, null);
         return view;
-
     }
 
     @Override
@@ -44,6 +45,11 @@ public class UserFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         //init control
         initControl();
+
+
+        Intent intent=getActivity().getIntent();
+        String Username_get=intent.getStringExtra(KEY);
+        username.setText(Username_get);
 
 
         post.setOnClickListener(new View.OnClickListener() {
@@ -64,18 +70,14 @@ public class UserFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(),SetActivity.class));
-
             }
         });
     }
 
     private void initControl() {
+        username=(TextView)getActivity().findViewById(R.id.username);
         set=(Button)getActivity().findViewById(R.id.set);
         post=(TextView) getActivity().findViewById(R.id.post);
         comment=(TextView)getActivity().findViewById(R.id.comment);
     }
-
-
-
-
 }

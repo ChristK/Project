@@ -25,6 +25,8 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/username"
             android:layout_marginTop="20dp"
+            android:lines="1"
+            android:inputType="text"
             android:layout_alignLeft="@+id/renew_pass"
             android:hint="Username"/>
 
@@ -37,6 +39,8 @@
             android:layout_below="@+id/user"
             android:layout_marginTop="20dp"
             android:layout_alignLeft="@+id/renew_pass"
+            android:lines="1"
+            android:inputType="textPassword"
             android:hint="Password"/>
 
         <EditText
@@ -45,6 +49,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_below="@+id/new_pass"
+            android:lines="1"
+            android:inputType="textPassword"
             android:hint="Comfirm Password "/>
     </RelativeLayout>
 

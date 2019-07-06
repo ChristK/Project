@@ -18,10 +18,9 @@
         <item>Cambridge</item>
     </string-array>
 
-    <string-array name="detail">
-        <item>My post</item>
-        <item>My content</item>
-        <item>About</item>
-        <item>Logout</item>
+    <string-array name="function">
+        <item>+</item>
+        <item>Take photo</item>
+        <item>Choose photo</item>
     </string-array>
 </resources>

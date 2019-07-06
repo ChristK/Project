@@ -6,9 +6,19 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
+import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.project.Fragment.MainFragment;
 import com.example.project.Fragment.UserFragment;
@@ -32,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
     /** Set the default fragment */
     private int currentTab;
+
+    private UserFragment userFragment;
 
 
     private ImageView home;
@@ -57,13 +69,12 @@ public class MainActivity extends AppCompatActivity {
         //default Fragment
         defaultFragment();
 
+
         home.setOnClickListener(onClickListener);
         user.setOnClickListener(onClickListener);
 
     }
-    public void logout(){
-        sp.setLogin(false);
-    }
+
 
     private void initFragment() {
         fragments.put(PAGE_HOME, new MainFragment());
@@ -76,16 +87,6 @@ public class MainActivity extends AppCompatActivity {
         currentTab = PAGE_HOME;
         ft.commit();
     }
-
-
-
-    //init control method
-    private void init() {
-        home=(ImageView)findViewById(R.id.homepage);
-        user=(ImageView)findViewById(R.id.userpage);
-
-    }
-
 
     private void changeTab(int page) {
         if (currentTab == page) {
@@ -114,6 +115,36 @@ public class MainActivity extends AppCompatActivity {
             ft.commitAllowingStateLoss();
         }
     }
+
+    //Menu 菜单
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.take:
+                break;
+
+            case R.id.chosse:
+                break;
+
+            default:
+                break;
+        }
+        return true;
+    }
+
+    //init control method
+    private void init() {
+        home=(ImageView)findViewById(R.id.homepage);
+        user=(ImageView)findViewById(R.id.userpage);
+
+    }
+
 
     View.OnClickListener onClickListener=new View.OnClickListener() {
         @Override
