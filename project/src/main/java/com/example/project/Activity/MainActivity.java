@@ -75,6 +75,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //init control method
+    private void init() {
+        home=(ImageView)findViewById(R.id.homepage);
+        user=(ImageView)findViewById(R.id.userpage);
+
+    }
+
 
     private void initFragment() {
         fragments.put(PAGE_HOME, new MainFragment());
@@ -138,12 +145,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    //init control method
-    private void init() {
-        home=(ImageView)findViewById(R.id.homepage);
-        user=(ImageView)findViewById(R.id.userpage);
 
-    }
 
 
     View.OnClickListener onClickListener=new View.OnClickListener() {
