@@ -1,9 +1,15 @@
 package com.example.project.Activity;
 
+import android.Manifest;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Layout;
@@ -35,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int PAGE_USER = 1;
 
     /**manage fragment*/
-    private HashMap<Integer,Fragment> fragments = new HashMap<>();
+    private HashMap<Integer, Fragment> fragments = new HashMap<>();
 
     //Current activity's fragment control
     private int fragmentContentId = R.id.fragment_content;
@@ -48,17 +54,19 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView home;
     private ImageView user;
-
+    private TextView lat;
+    private TextView lon;
 
     private Button logout;
     private SharedPerencesUtil sp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         //keep login
-        sp=SharedPerencesUtil.getInstance(getApplicationContext());
+        sp = SharedPerencesUtil.getInstance(getApplicationContext());
 
         //init control
         init();
@@ -69,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
         //default Fragment
         defaultFragment();
 
-
         home.setOnClickListener(onClickListener);
         user.setOnClickListener(onClickListener);
 
@@ -79,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
         home=(ImageView)findViewById(R.id.homepage);
         user=(ImageView)findViewById(R.id.userpage);
+        //lat=(TextView)findViewById(R.id.lat);
+        //lon=(TextView)findViewById(R.id.lon);
 
     }
 
@@ -123,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //Menu 菜单
+    //Menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu,menu);
@@ -139,12 +148,14 @@ public class MainActivity extends AppCompatActivity {
             case R.id.chosse:
                 break;
 
+            case R.id.post:
+                break;
+
             default:
                 break;
         }
         return true;
     }
-
 
 
 
@@ -161,4 +172,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+
 }

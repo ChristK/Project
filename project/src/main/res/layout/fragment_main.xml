@@ -12,11 +12,12 @@ tools:context=".Fragment.MainFragment">
         android:layout_height="wrap_content"
         android:background="#CD5C5C">
 
-         <Spinner
-             android:id="@+id/location"
-             android:layout_width="85dp"
-             android:layout_height="wrap_content"
-             android:entries="@array/location"></Spinner>
+
+        <TextView
+            android:id="@+id/cityname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"/>
          <EditText
              android:id="@+id/et_search"
              android:layout_width="wrap_content"
@@ -41,30 +42,30 @@ tools:context=".Fragment.MainFragment">
 
             <ImageView
                 android:id="@+id/food"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="25sp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginLeft="20sp"
                 android:background="@drawable/food" />
 
             <ImageView
                 android:id="@+id/movie"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="25sp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginLeft="20sp"
                 android:background="@drawable/movie"/>
 
             <ImageView
                 android:id="@+id/hotel"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="25dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginLeft="20dp"
                 android:background="@drawable/hotel"/>
 
             <ImageView
                 android:id="@+id/ellipsis"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="25sp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginLeft="20sp"
                 android:background="@drawable/ellipsis"/>
     </LinearLayout>
 
