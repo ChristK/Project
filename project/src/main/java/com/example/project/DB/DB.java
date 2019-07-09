@@ -3,11 +3,8 @@ package com.example.project.DB;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Build;
 
-public class SQliteDB extends SQLiteOpenHelper {
-
-
+public class DB extends SQLiteOpenHelper {
 
     /**
      * Database name
@@ -18,7 +15,11 @@ public class SQliteDB extends SQLiteOpenHelper {
     /**
      * Table name
      */
+    //userTable
     public static final String DATABASE_USER_TABLE="table_user";
+
+
+    private static final String DATABASE_POST_TABLE="table_post";
 
 
     /**
@@ -33,6 +34,32 @@ public class SQliteDB extends SQLiteOpenHelper {
     public static final String KEY_PASSWORD="password";
     public static final String KEY_EMAIL="email";
 
+
+
+    //userTable sql
+    String userSql="create table "+DATABASE_USER_TABLE+"(" +
+            "id integer primary key autoincrement," +
+            "Username text," +
+            "Password text," +
+            "Email text)";
+
+    String dropUser="drop table if exists "+DATABASE_USER_TABLE;
+
+
+    //postTable sql
+    private static final String postSql=" create table "+DATABASE_POST_TABLE+"("+
+            "_id integer primary key autoincrement," +
+            "username text,"+
+            "photos blob,"+
+            "comment text,"+
+            "latitude real,"+
+            "longitude real,"+
+            "cityname text,"+
+            "time datetime)";
+
+    String dropPost="drop table if exists "+DATABASE_POST_TABLE;
+
+
     //context:上下文
     //name:数据库名称
     //factory:游标工厂
@@ -40,37 +67,31 @@ public class SQliteDB extends SQLiteOpenHelper {
     public static final int VERSION=2;
 
 
-    public SQliteDB(Context context) {
+    public DB(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
     }
 
     //创建表
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table "+DATABASE_USER_TABLE+"(" +
-                "id integer primary key autoincrement," +
-                "Username text," +
-                "Password text," +
-                "Email text)");
+        db.execSQL(userSql);
+
+        db.execSQL(postSql);
 
     }
 
     //数据库升级
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
         if(newVersion==2||oldVersion==1){
             //Update UserInfo
             //1.delete table
-            String sql=("drop table if exists "+DATABASE_USER_TABLE);
-            db.execSQL(sql);
+            db.execSQL(dropUser);
             //2.create table
-            String sql2=("create table "+DATABASE_USER_TABLE+"(" +
-                    "id integer primary key autoincrement," +
-                    "Username text," +
-                    "Password text," +
-                    "Email text)");
-            db.execSQL(sql2);
+            db.execSQL(userSql);
+
+            db.execSQL(dropPost);
+            db.execSQL(postSql);
         }
     }
 

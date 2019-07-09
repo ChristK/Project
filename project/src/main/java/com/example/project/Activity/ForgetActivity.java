@@ -9,10 +9,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.project.DB.SQliteDB;
+import com.example.project.DB.DB;
 import com.example.project.R;
 
 public class ForgetActivity extends AppCompatActivity {
@@ -47,8 +46,8 @@ public class ForgetActivity extends AppCompatActivity {
 
     public boolean isExist(String username_input){
 
-        SQliteDB sQliteDB=new SQliteDB(ForgetActivity.this);
-        SQLiteDatabase database=sQliteDB.getReadableDatabase();
+        DB DB =new DB(ForgetActivity.this);
+        SQLiteDatabase database= DB.getReadableDatabase();
         username_input=username.getText().toString().trim();
         Cursor cursor=database.query(DATABASE_USER_TABLE, new String[]{"username"}, "username=?", new String[]{username_input}, null, null, null);
 
@@ -60,8 +59,8 @@ public class ForgetActivity extends AppCompatActivity {
 
     private void updatePassword(){
 
-        SQliteDB sQliteDB=new SQliteDB(ForgetActivity.this);
-        SQLiteDatabase database=sQliteDB.getReadableDatabase();
+        DB DB =new DB(ForgetActivity.this);
+        SQLiteDatabase database= DB.getReadableDatabase();
         String username_input=username.getText().toString().trim();
         String newpassword_input=new_password.getText().toString().trim();
         String renewPassword_input=renew_password.getText().toString().trim();

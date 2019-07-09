@@ -195,7 +195,7 @@ public class MainFragment extends Fragment {
                 final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
                 dialog.setIcon(R.drawable.map);
                 dialog.setTitle("Location");
-                dialog.setMessage("According to your GPS, you are in"+locality);
+                dialog.setMessage("According to your GPS, you are in "+locality);
                 dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

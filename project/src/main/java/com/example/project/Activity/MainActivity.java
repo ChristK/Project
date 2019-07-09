@@ -1,35 +1,23 @@
 package com.example.project.Activity;
 
-import android.Manifest;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.support.v4.app.ActivityCompat;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
-import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.project.Fragment.MainFragment;
 import com.example.project.Fragment.UserFragment;
 import com.example.project.R;
 import com.example.project.Util.SharedPerencesUtil;
+
 
 import java.util.HashMap;
 
@@ -143,12 +131,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.take:
-                break;
 
-            case R.id.chosse:
                 break;
 
             case R.id.post:
+                startActivity(new Intent(this,MomentActivity.class));
                 break;
 
             default:

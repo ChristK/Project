@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.project.DB.SQliteDB;
+import com.example.project.DB.DB;
 import com.example.project.R;
 import com.example.project.Util.SharedPerencesUtil;
 
@@ -62,8 +62,8 @@ public class LoginActivity extends AppCompatActivity {
      //Login
     private void login() {
 
-        SQliteDB sQliteDB=new SQliteDB(LoginActivity.this);
-        SQLiteDatabase database=sQliteDB.getReadableDatabase();
+        DB DB =new DB(LoginActivity.this);
+        SQLiteDatabase database= DB.getReadableDatabase();
         String username_input=username.getText().toString().trim();
         String password_input=password.getText().toString().trim();
         SharedPerencesUtil sp= SharedPerencesUtil.getInstance(getApplicationContext());
@@ -98,4 +98,5 @@ public class LoginActivity extends AppCompatActivity {
         forget = (TextView) findViewById(R.id.forget);
         register = (TextView) findViewById(R.id.register);
     }
+
 }

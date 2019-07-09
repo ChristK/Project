@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.project.R;
-import com.example.project.DB.SQliteDB;
+import com.example.project.DB.DB;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -49,8 +49,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     public boolean isExist(String username_input){
 
-        SQliteDB sQliteDB=new SQliteDB(RegisterActivity.this);
-        SQLiteDatabase database=sQliteDB.getReadableDatabase();
+        DB DB =new DB(RegisterActivity.this);
+        SQLiteDatabase database= DB.getReadableDatabase();
         username_input=username.getText().toString().trim();
         Cursor cursor=database.query(DATABASE_USER_TABLE, new String[]{"username"}, "username=?", new String[]{username_input}, null, null, null);
 
@@ -62,8 +62,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void insertUser() {
 
-        SQliteDB sQliteDB = new SQliteDB(RegisterActivity.this);
-        SQLiteDatabase database = sQliteDB.getReadableDatabase();
+        DB DB = new DB(RegisterActivity.this);
+        SQLiteDatabase database = DB.getReadableDatabase();
         String username_new = username.getText().toString().trim();
         String password_new = password.getText().toString().trim();
         String email_new = email.getText().toString().trim();
