@@ -1,6 +1,5 @@
 package com.example.project.Fragment;
 
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -68,23 +67,43 @@ public class MainFragment extends Fragment {
         //init control
         initControl();
 
-        //navigator function
-        movie.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-                dialog.setIcon(R.drawable.movie);
-                dialog.setTitle("Notification");
-                dialog.setMessage("Sorry,This function is not Open! \nStay tuned！");
-                dialog.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+        //cityName
+        cityName.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+
+                 final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+                 dialog.setIcon(R.drawable.map);
+                 dialog.setTitle("Location");
+                 dialog.setMessage("Your location is "+cityName.getText());
+                 dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                     @Override
+                     public void onClick(DialogInterface dialog, int which) {
+                         dialog.dismiss();
+                     }
+                 });
+                 dialog.show();
+
+             }
+        });
+
+                //navigator function
+                movie.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                    public void onClick(View v) {
+                        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+                        dialog.setIcon(R.drawable.movie);
+                        dialog.setTitle("Notification");
+                        dialog.setMessage("Sorry,This function is not Open! \nStay tuned！");
+                        dialog.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        dialog.show();
                     }
                 });
-                dialog.show();
-            }
-        });
 
         hotel.setOnClickListener(new View.OnClickListener() {
             @Override

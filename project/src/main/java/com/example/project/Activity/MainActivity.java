@@ -4,6 +4,8 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -19,6 +21,7 @@ import com.example.project.R;
 import com.example.project.Util.SharedPerencesUtil;
 
 
+import java.io.File;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
@@ -44,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView user;
     private TextView lat;
     private TextView lon;
-
     private Button logout;
     private SharedPerencesUtil sp;
 
@@ -131,7 +133,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.take:
-
+                Intent intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivity(intent);
                 break;
 
             case R.id.post:
