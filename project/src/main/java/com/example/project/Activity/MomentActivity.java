@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -25,7 +26,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.project.R;
 
@@ -37,6 +40,8 @@ public class MomentActivity extends AppCompatActivity{
     private ImageView photos;
     private Button submit;
     private ImageView photo;
+    private RatingBar ratingBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +69,6 @@ public class MomentActivity extends AppCompatActivity{
                 //intent.putExtra("bundle",bundle);
             }
         });
-
     }
 
     @Override
@@ -83,6 +87,7 @@ public class MomentActivity extends AppCompatActivity{
         photos=(ImageView)findViewById(R.id.photos);
         submit=(Button)findViewById(R.id.submit);
         photo = (ImageView) findViewById(R.id.photo);
+        ratingBar=(RatingBar)findViewById(R.id.score_rb);
 
     }
 
@@ -97,7 +102,12 @@ public class MomentActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.submit:
+                int result=ratingBar.getProgress();
+                float rating=ratingBar.getRating();
+                float step=ratingBar.getStepSize();
 
+                Log.i("TAG","step="+step+"result="+result+"rating="+rating);
+                Toast.makeText(this,"Got"+rating+"star",Toast.LENGTH_SHORT).show();
                 break;
 
             default:
