@@ -12,27 +12,101 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"/>
 
+    <RadioGroup
+        android:id="@+id/type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:layout_below="@id/time">
+        <RadioButton
+            android:id="@+id/meat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Meat"/>
+        <RadioButton
+            android:id="@+id/coffee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Coffee"/>
+        <RadioButton
+            android:id="@+id/burger"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Burger"/>
+        <RadioButton
+            android:id="@+id/vegetable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vegetable"/>
+
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/lat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_below="@id/post_et"/>
+
+    <TextView
+        android:id="@+id/longi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_below="@id/lat"/>
+
+    <TextView
+        android:id="@+id/cityname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_below="@id/longi"/>
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_below="@id/cityname"/>
+
+
     <TextView
         android:id="@+id/socre_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Score"
         android:textSize="20sp"
-        android:layout_below="@id/post_et"/>
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_alignLeft="@+id/type"
+        android:layout_below="@id/type"/>
 
     <RatingBar
         android:id="@+id/score_rb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
         android:numStars="5"
         android:rating="0"
         android:layout_below="@id/socre_tv"/>
 
     <ImageView
         android:id="@+id/photos"
-        android:layout_width="85dp"
-        android:layout_height="85dp"
+        android:layout_width="95dp"
+        android:layout_height="95dp"
         android:src="@drawable/photos"
+        android:layout_marginTop="10dp"
         android:layout_below="@id/post_et"
         android:layout_alignParentRight="true"/>
 
@@ -41,7 +115,7 @@
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="10dp"
         android:layout_below="@id/score_rb"/>
 
 

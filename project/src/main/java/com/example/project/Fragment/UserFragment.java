@@ -3,6 +3,7 @@ package com.example.project.Fragment;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -32,6 +33,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static android.content.Context.LOCATION_SERVICE;
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,11 +66,9 @@ public class UserFragment extends Fragment {
 
 
         //get Username
-        Intent intent=getActivity().getIntent();
-        String Username_get=intent.getStringExtra(KEY);
-        username.setText(Username_get);
-
-
+        SharedPreferences sp=getActivity().getSharedPreferences("save",MODE_PRIVATE);
+        String str =sp.getString("name",null) ;
+        username.setText(str);
 
 
         post.setOnClickListener(new View.OnClickListener() {

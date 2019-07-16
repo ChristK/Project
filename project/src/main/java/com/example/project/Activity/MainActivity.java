@@ -45,9 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView home;
     private ImageView user;
-    private TextView lat;
-    private TextView lon;
-    private Button logout;
+    private String username=null;
     private SharedPerencesUtil sp;
 
     @Override
@@ -67,6 +65,11 @@ public class MainActivity extends AppCompatActivity {
         //default Fragment
         defaultFragment();
 
+
+        Intent intent1=getIntent();
+        username=intent1.getStringExtra("Username");
+
+
         home.setOnClickListener(onClickListener);
         user.setOnClickListener(onClickListener);
 
@@ -76,8 +79,6 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
         home=(ImageView)findViewById(R.id.homepage);
         user=(ImageView)findViewById(R.id.userpage);
-        //lat=(TextView)findViewById(R.id.lat);
-        //lon=(TextView)findViewById(R.id.lon);
 
     }
 
@@ -138,7 +139,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.post:
-                startActivity(new Intent(this,MomentActivity.class));
+
+                Intent intent1=new Intent(MainActivity.this,MomentActivity.class);
+                intent1.putExtra("Username",username);
+                startActivity(intent1);
                 break;
 
             default:

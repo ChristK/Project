@@ -22,20 +22,6 @@ public class DB extends SQLiteOpenHelper {
     private static final String DATABASE_POST_TABLE="table_post";
 
 
-    /**
-     *The row name of the table
-     * ID
-     * Username
-     * Password
-     * Email
-     */
-    public static final String KEY_ID="id";
-    public static final String KEY_USERNAME="username";
-    public static final String KEY_PASSWORD="password";
-    public static final String KEY_EMAIL="email";
-
-
-
     //userTable sql
     String userSql="create table "+DATABASE_USER_TABLE+"(" +
             "id integer primary key autoincrement," +
@@ -52,6 +38,8 @@ public class DB extends SQLiteOpenHelper {
             "username text,"+
             "photos blob,"+
             "comment text,"+
+            "type text," +
+            "score real,"+
             "latitude real,"+
             "longitude real,"+
             "cityname text,"+

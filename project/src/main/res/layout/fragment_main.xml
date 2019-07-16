@@ -43,32 +43,32 @@ tools:context=".Fragment.MainFragment">
           android:background="#FFFFE0">
 
             <ImageView
-                android:id="@+id/food"
+                android:id="@+id/meat"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_marginLeft="20sp"
-                android:background="@drawable/food" />
+                android:background="@drawable/meat" />
 
             <ImageView
-                android:id="@+id/movie"
+                android:id="@+id/coffee"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_marginLeft="20sp"
-                android:background="@drawable/movie"/>
+                android:background="@drawable/coffee"/>
 
             <ImageView
-                android:id="@+id/hotel"
+                android:id="@+id/burger"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_marginLeft="20dp"
-                android:background="@drawable/hotel"/>
+                android:background="@drawable/burger"/>
 
             <ImageView
-                android:id="@+id/ellipsis"
+                android:id="@+id/vegetable"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_marginLeft="20sp"
-                android:background="@drawable/ellipsis"/>
+                android:background="@drawable/vegetable"/>
     </LinearLayout>
 
 

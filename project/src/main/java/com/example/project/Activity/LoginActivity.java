@@ -1,5 +1,6 @@
 package com.example.project.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -39,6 +40,7 @@ public class LoginActivity extends AppCompatActivity {
         loginActivity=LoginActivity.this;
         setContentView(R.layout.activity_login);
 
+
         //init control
         initControl();
 
@@ -75,6 +77,12 @@ public class LoginActivity extends AppCompatActivity {
         {
             sp.setLogin(true);
             Toast.makeText(LoginActivity.this,"Login Successful! \n Welcome "+ username_input,Toast.LENGTH_SHORT).show();
+
+            SharedPreferences sharedPreferences=getSharedPreferences("save",MODE_PRIVATE);
+            SharedPreferences.Editor editor=sharedPreferences.edit();
+            editor.putString("name",username_input);
+            editor.commit();
+
 
             Intent intent=new Intent(LoginActivity.this,MainActivity.class);
             intent.putExtra("Username",username_input);
