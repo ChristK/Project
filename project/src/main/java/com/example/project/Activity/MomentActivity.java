@@ -243,8 +243,8 @@ public class MomentActivity extends AppCompatActivity{
 
 
 
-            SimpleDateFormat    sDateFormat    =   new    SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-            String    date    =    sDateFormat.format(new    java.util.Date());
+            SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            String date = sDateFormat.format(new java.util.Date());
             time.setText(date);
 
             {

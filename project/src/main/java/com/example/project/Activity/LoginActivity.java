@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.project.Bean.User;
 import com.example.project.DB.DB;
 import com.example.project.R;
 import com.example.project.Util.SharedPerencesUtil;
@@ -72,7 +73,6 @@ public class LoginActivity extends AppCompatActivity {
 
         Cursor cursor=database.query(DATABASE_USER_TABLE, new String[]{"username","password"}, "username=? and Password=?", new String[]{username_input,password_input}, null, null, null);
 
-
         if(cursor.getCount()!=0)
         {
             sp.setLogin(true);
@@ -82,7 +82,6 @@ public class LoginActivity extends AppCompatActivity {
             SharedPreferences.Editor editor=sharedPreferences.edit();
             editor.putString("name",username_input);
             editor.commit();
-
 
             Intent intent=new Intent(LoginActivity.this,MainActivity.class);
             intent.putExtra("Username",username_input);

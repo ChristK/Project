@@ -5,6 +5,8 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -24,13 +26,19 @@ import android.widget.Toast;
 import com.example.project.Activity.CommentActivity;
 import com.example.project.Activity.MainActivity;
 import com.example.project.Activity.PostActivity;
+import com.example.project.Activity.RegisterActivity;
 import com.example.project.Activity.SetActivity;
+import com.example.project.Bean.Post;
+import com.example.project.DB.DB;
 import com.example.project.R;
 import com.example.project.Util.SharedPerencesUtil;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import static android.content.Context.LOCATION_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
@@ -46,6 +54,7 @@ public class UserFragment extends Fragment {
     private TextView comment;
     private SharedPerencesUtil sp;
     public static final String KEY="Username";
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,6 +83,7 @@ public class UserFragment extends Fragment {
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 startActivity(new Intent(getActivity(), PostActivity.class));
             }
         });
