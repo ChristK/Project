@@ -1,6 +1,7 @@
 package com.example.project.Activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,6 +15,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -34,7 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PostActivity extends AppCompatActivity {
+public class PostActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
 
     /**
@@ -46,12 +49,14 @@ public class PostActivity extends AppCompatActivity {
     private static final String DATABASE_POST_TABLE = "table_post";
 
     private ListView listView;
+    private int id;
     private byte[] photo;
     private String cityname;
     private String time;
     private String type;
     private float score;
     private String comment;
+    private  MyPost myPost;
 
 
     @Override
@@ -63,8 +68,10 @@ public class PostActivity extends AppCompatActivity {
         String username = sp.getString("name", null);
         //get listMap
         listView=(ListView)findViewById(R.id.post_lv);
-        MyPost myPost=new MyPost(this,queryPost(username));
+        myPost=new MyPost(this,queryPost(username));
         listView.setAdapter(myPost);
+
+        listView.setOnItemClickListener(this);
 
     }
 
@@ -72,26 +79,30 @@ public class PostActivity extends AppCompatActivity {
         DB DB = new DB(PostActivity.this);
         SQLiteDatabase database = DB.getReadableDatabase();
         List<Post> listMaps = new ArrayList<Post>();
-        Cursor cursor = database.query(DATABASE_POST_TABLE, new String[]{"photos","cityname","time","type","comment","score"}, "username=?", new String[]{username}, null, null, null);
-        int count=cursor.getCount();
+        Cursor cursor = database.query(DATABASE_POST_TABLE, new String[]{"_id","photos","cityname","time","type","comment","score"}, "username=?", new String[]{username}, null, null, null);
         if(cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0)  {
-            Log.i("SQL",String.valueOf(cursor.getCount()));
+           //Log.i("SQL",String.valueOf(cursor.getCount()));
            do{
+               id=cursor.getInt(cursor.getColumnIndex("_id"));
                photo = cursor.getBlob(cursor.getColumnIndex("photos"));
                cityname = cursor.getString(cursor.getColumnIndex("cityname"));
                time = cursor.getString(cursor.getColumnIndex("time"));
                type = cursor.getString(cursor.getColumnIndex("type"));
                comment = cursor.getString(cursor.getColumnIndex("comment"));
                score = cursor.getFloat(cursor.getColumnIndex("score"));
-               Post post = new Post(photo, comment, type, score, time, cityname);
+               Post post = new Post(id,photo, comment, type, score, time, cityname);
                listMaps.add(post);
-               Log.i("VAlue",post.getCityname());
-               Log.i("VAlue",post.getComment());
-               Log.i("VAlue",String.valueOf(post.getScore()));
-               Log.i("VAlue",post.getType());
-               Log.i("VAlue",post.getDate());
-               Log.i("VAlue",String.valueOf(post.getPhoto()));
-               Log.i("TEST","+===="+listMaps);
+
+               /**
+                *  Log.i("VAlue",post.getCityname());
+                *                 Log.i("VAlue",post.getComment());
+                *                 Log.i("VAlue",String.valueOf(post.getScore()));
+                *                 Log.i("VAlue",post.getType());
+                *                 Log.i("VAlue",post.getDate());
+                *                 Log.i("VAlue",String.valueOf(post.getPhoto()));
+                *                 Log.i("TEST","+===="+listMaps);
+                */
+
            }while (cursor.moveToNext());
         } else {
             Log.i("SQl","没值");
@@ -99,5 +110,15 @@ public class PostActivity extends AppCompatActivity {
         }
         return listMaps;
     }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Post post=(Post) myPost.getItem(position);
+        int post_id=post.getId();
+        Intent intent=new Intent(this,MyPost_DetailActivity.class);
+        intent.putExtra("id",post_id);
+        startActivity(intent);
+    }
+
 
 }
