@@ -1,6 +1,8 @@
 package com.example.project.Activity;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,9 +11,11 @@ import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.project.Adapter.MyPost;
 import com.example.project.DB.DB;
 import com.example.project.R;
 
@@ -37,6 +41,35 @@ public class MyPost_DetailActivity extends AppCompatActivity {
         init();
         //Log.i("ID",id+"");
         getDetails();
+
+        delete_tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final AlertDialog.Builder dialog = new AlertDialog.Builder(MyPost_DetailActivity.this);
+                dialog.setIcon(R.drawable.warning);
+                dialog.setTitle("Warning");
+                dialog.setMessage("Are you sure to delete this post? ");
+                dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        intent=getIntent();
+                        int id=intent.getIntExtra("id",0);
+                        delete(id);
+                        finish();
+                    }
+                });
+
+                dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
+
+            }
+        });
 
     }
 
@@ -79,8 +112,15 @@ public class MyPost_DetailActivity extends AppCompatActivity {
             type_tv.setText("Type:"+type);
             comment_tv.setText(comment);
             score_tv.setText("Score:"+score);
-
         }
+        database.close();
+    }
 
+    public void delete(int id){
+        String post_id=String.valueOf(id);
+        DB db=new DB(MyPost_DetailActivity.this);
+        SQLiteDatabase database=db.getReadableDatabase();
+        database.delete(DATABASE_POST_TABLE,"_id=?",new String[]{post_id});
+        database.close();
     }
 }
