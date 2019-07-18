@@ -1,41 +1,24 @@
 package com.example.project.Activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.project.Adapter.MyPost;
+import com.example.project.Adapter.MyPost_adapter;
 import com.example.project.Bean.Post;
 import com.example.project.DB.DB;
 import com.example.project.R;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class PostActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -56,7 +39,7 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
     private String type;
     private float score;
     private String comment;
-    private  MyPost myPost;
+    private MyPost_adapter myPostAdapter;
 
 
     @Override
@@ -68,8 +51,8 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
         String username = sp.getString("name", null);
         //get listMap
         listView=(ListView)findViewById(R.id.post_lv);
-        myPost=new MyPost(this,queryPost(username));
-        listView.setAdapter(myPost);
+        myPostAdapter =new MyPost_adapter(this,queryPost(username));
+        listView.setAdapter(myPostAdapter);
 
         listView.setOnItemClickListener(this);
 
@@ -113,7 +96,7 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Post post=(Post) myPost.getItem(position);
+        Post post=(Post) myPostAdapter.getItem(position);
         int post_id=post.getId();
         Intent intent=new Intent(this,MyPost_DetailActivity.class);
         intent.putExtra("id",post_id);

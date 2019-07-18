@@ -36,6 +36,19 @@ public class Post {
         this.date=date;
     }
 
+    public Post(int id,String username,String comment,String type,String time,float score,byte[] photo){
+        super();
+        this._id=id;
+        this.Username=username;
+        this.comment=comment;
+        this.type=type;
+        this.date=time;
+        this.score=score;
+        this.photo=photo;
+
+
+    }
+
     public Post(int id,String username,byte[] photo,String comment,String type,float score,double latitude,double longitude,String cityname,String date){
         super();
         this._id=id;

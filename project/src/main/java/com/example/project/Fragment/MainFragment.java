@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -14,6 +16,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,12 +27,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.project.Adapter.Post_cityname_adapter;
+import com.example.project.Bean.Post;
+import com.example.project.DB.DB;
 import com.example.project.R;
 import com.example.project.Util.SharedPerencesUtil;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -45,11 +52,24 @@ public class MainFragment extends Fragment {
     private ImageView coffee;
     private ImageView burger;
     private ImageView vegetable;
-    private ListView listItem;
+    private ListView listView;
     private EditText et_search;
     private Button btn_search;
     private TextView cityName;
     private List<Address> addresses;
+    private List<Post> posts;
+    private int id;
+    private String username,time,comment,type;
+    private byte[] photo;
+    private float score;
+
+    /**
+     * Table name
+     */
+    //userTable
+    public static final String DATABASE_USER_TABLE = "table_user";
+
+    private static final String DATABASE_POST_TABLE = "table_post";
 
 
     @Override
@@ -83,12 +103,8 @@ public class MainFragment extends Fragment {
                      }
                  });
                  dialog.show();
-
              }
         });
-
-
-
         //location manager
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
@@ -129,6 +145,9 @@ public class MainFragment extends Fragment {
 
         Location location=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         locationUpdates(location);
+        String cityname=cityName.getText().toString().trim();
+        posts=getData(cityname);
+        listView.setAdapter(new Post_cityname_adapter(getActivity(),posts));
     }
 
 
@@ -140,6 +159,7 @@ public class MainFragment extends Fragment {
         et_search=(EditText) getActivity().findViewById(R.id.et_search);
         btn_search=(Button) getActivity().findViewById(R.id.btn_search);
         cityName=(TextView)getActivity().findViewById(R.id.cityname);
+        listView=(ListView)getActivity().findViewById(R.id.list_item);
     }
 
 
@@ -176,5 +196,31 @@ public class MainFragment extends Fragment {
         else {
             Toast.makeText(getActivity(),"No GPS",Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public List<Post> getData(String cityname){
+        DB db=new DB(getActivity());
+        SQLiteDatabase database=db.getReadableDatabase();
+        List<Post> listMaps = new ArrayList<Post>();
+        Cursor cursor=database.query(DATABASE_POST_TABLE,new String[]{"username","_id","time","comment","score","type","photos"},"cityname=?",new String[]{cityname},null,null,null);
+        Log.i("ID",cursor.getCount()+"");
+        if(cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0){
+            do{
+                id=cursor.getInt(cursor.getColumnIndex("_id"));
+                username=cursor.getString(cursor.getColumnIndex("username"));
+                time=cursor.getString(cursor.getColumnIndex("time"));
+                type=cursor.getString(cursor.getColumnIndex("type"));
+                comment=cursor.getString(cursor.getColumnIndex("comment"));
+                score=cursor.getFloat(cursor.getColumnIndex("score"));
+                photo=cursor.getBlob(cursor.getColumnIndex("photos"));
+
+                Post post=new Post(id,username,comment,type,time,score,photo);
+                listMaps.add(post);
+
+            }while (cursor.moveToNext());
+        }else {
+            Toast.makeText(getActivity(),"No post in this city",Toast.LENGTH_SHORT).show();
+        }
+        return listMaps;
     }
 }

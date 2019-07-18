@@ -14,11 +14,11 @@ import com.example.project.R;
 
 import java.util.List;
 
-public class MyPost extends BaseAdapter {
+public class MyPost_adapter extends BaseAdapter {
     private List<Post> posts;
     LayoutInflater inflater;
 
-    public MyPost(Context context,List<Post> posts){
+    public MyPost_adapter(Context context, List<Post> posts){
         this.posts=posts;
         inflater=LayoutInflater.from(context);
     }
@@ -52,7 +52,6 @@ public class MyPost extends BaseAdapter {
             viewHolder.type=(TextView)convertView.findViewById(R.id.type);
             viewHolder.time=(TextView)convertView.findViewById(R.id.time);
             viewHolder.score=(TextView)convertView.findViewById(R.id.score);
-            viewHolder.score.setVisibility(View.GONE);
             viewHolder.photo=(ImageView) convertView.findViewById(R.id.photo);
             convertView.setTag(viewHolder);
         }else {
