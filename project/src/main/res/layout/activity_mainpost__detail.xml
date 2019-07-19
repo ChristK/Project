@@ -16,7 +16,7 @@
         android:layout_marginTop="5dp"
         android:textColor="#A52A2A"
         android:text="3"
-        android:textSize="50sp"/>
+        android:textSize="40sp"/>
 
     <ImageView
         android:id="@+id/photo"
@@ -29,9 +29,9 @@
         android:id="@+id/type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/photo"
+        android:layout_marginLeft="30dp"
         android:text="1"
         android:textSize="15sp"/>
 
@@ -48,10 +48,9 @@
         android:id="@+id/cityname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/photo"
+        android:layout_below="@+id/type"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="30dp"
-        android:textSize="18sp"
         android:textColor="#6495ED"
         android:text="5"/>
 
@@ -59,10 +58,10 @@
         android:id="@+id/score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/type"
-        android:layout_alignParentRight="true"
+        android:layout_below="@+id/photo"
+        android:layout_toRightOf="@+id/type"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="30dp"
+        android:layout_marginLeft="60dp"
         android:text="6"/>
 
     <TextView
@@ -70,7 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="8"
-        android:layout_below="@+id/lon"
+        android:layout_below="@+id/score"
         android:layout_toRightOf="@+id/cityname"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="50dp"/>
@@ -80,7 +79,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="9"
-        android:layout_below="@+id/photo"
+        android:layout_below="@+id/lat"
         android:layout_toRightOf="@+id/cityname"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="50dp"/>
@@ -89,20 +88,10 @@
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/lat"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="25dp"
         android:text="7"/>
 
-    <TextView
-        android:id="@+id/delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/lat"
-        android:layout_toRightOf="@+id/time"
-        android:textColor="#6495ED"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="30dp"
-        android:text="Delete"/>
 
 </RelativeLayout>

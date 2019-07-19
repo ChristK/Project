@@ -225,6 +225,8 @@ public class MomentActivity extends AppCompatActivity{
 
         long rowId = database.insert(DATABASE_POST_TABLE, null, values);
         if (rowId!=-1){
+            Intent intent=new Intent(this,PostActivity.class);
+            startActivity(intent);
             Toast.makeText(this,"Post Successful!",Toast.LENGTH_SHORT).show();
             finish();
         }

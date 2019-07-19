@@ -16,19 +16,20 @@
         android:layout_centerHorizontal="true"/>
 
     <TextView
-        android:id="@+id/username"
+        android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/user_photo"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:textSize="30sp"
-        android:layout_centerHorizontal="true"  />
+        android:textSize="20sp"
+        android:text="username"/>
 
     <LinearLayout
         android:id="@+id/ll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/username"
+        android:layout_below="@+id/name"
         android:orientation="vertical">
 
         <TextView
@@ -40,16 +41,7 @@
             android:layout_marginTop="10dp"
             android:onClick="Operator"
             android:text="My post"
-            android:textSize="20sp" />
-        <TextView
-            android:id="@+id/comment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="10dp"
-            android:textSize="20sp"
-            android:onClick="Operator"
-            android:text="My Conmment"/>
+            android:textSize="20sp"/>
 
     </LinearLayout>
     <Button

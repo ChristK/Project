@@ -42,7 +42,9 @@ public class MyPost_adapter extends BaseAdapter {
 
         ViewHolder viewHolder=null;
         if (convertView==null){
+
             convertView=inflater.inflate(R.layout.adapter_listview_mypost,null);
+
             //find control
             viewHolder=new ViewHolder();
             viewHolder.id=(TextView)convertView.findViewById(R.id.post_id);
@@ -53,7 +55,9 @@ public class MyPost_adapter extends BaseAdapter {
             viewHolder.time=(TextView)convertView.findViewById(R.id.time);
             viewHolder.score=(TextView)convertView.findViewById(R.id.score);
             viewHolder.photo=(ImageView) convertView.findViewById(R.id.photo);
+
             convertView.setTag(viewHolder);
+
         }else {
            viewHolder=(ViewHolder) convertView.getTag();
         }
@@ -66,6 +70,7 @@ public class MyPost_adapter extends BaseAdapter {
         byte[] photo=posts.get(position).getPhoto();
         Bitmap photoitmap = BitmapFactory.decodeByteArray(photo, 0, photo.length);
         viewHolder.photo.setImageBitmap(photoitmap);
+
         return convertView;
     }
 

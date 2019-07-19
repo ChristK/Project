@@ -2,13 +2,12 @@ package com.example.project.Fragment;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
@@ -20,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -27,11 +27,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.project.Adapter.Post_cityname_adapter;
+import com.example.project.Activity.MainPost_DetailActivity;
+import com.example.project.Activity.MyPost_DetailActivity;
+import com.example.project.Adapter.Postcityname_adapter;
 import com.example.project.Bean.Post;
 import com.example.project.DB.DB;
 import com.example.project.R;
-import com.example.project.Util.SharedPerencesUtil;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -41,12 +42,11 @@ import java.util.List;
 import java.util.Locale;
 
 import static android.content.Context.LOCATION_SERVICE;
-import static android.support.v4.content.ContextCompat.getSystemService;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private ImageView meat;
     private ImageView coffee;
@@ -62,7 +62,7 @@ public class MainFragment extends Fragment {
     private String username,time,comment,type;
     private byte[] photo;
     private float score;
-
+    private Postcityname_adapter postcityname_adapter;
     /**
      * Table name
      */
@@ -146,9 +146,13 @@ public class MainFragment extends Fragment {
         Location location=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         locationUpdates(location);
         String cityname=cityName.getText().toString().trim();
-        posts=getData(cityname);
-        listView.setAdapter(new Post_cityname_adapter(getActivity(),posts));
+        postcityname_adapter=new Postcityname_adapter(getActivity(),getData(cityname));
+        listView.setAdapter(postcityname_adapter);
+
+
+        listView.setOnItemClickListener(this);
     }
+
 
 
     private void initControl() {
@@ -203,7 +207,6 @@ public class MainFragment extends Fragment {
         SQLiteDatabase database=db.getReadableDatabase();
         List<Post> listMaps = new ArrayList<Post>();
         Cursor cursor=database.query(DATABASE_POST_TABLE,new String[]{"username","_id","time","comment","score","type","photos"},"cityname=?",new String[]{cityname},null,null,null);
-        Log.i("ID",cursor.getCount()+"");
         if(cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0){
             do{
                 id=cursor.getInt(cursor.getColumnIndex("_id"));
@@ -222,5 +225,15 @@ public class MainFragment extends Fragment {
             Toast.makeText(getActivity(),"No post in this city",Toast.LENGTH_SHORT).show();
         }
         return listMaps;
+    }
+
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Post post=(Post) postcityname_adapter.getItem(position);
+        int post_id=post.getId();
+        Intent intent=new Intent(getActivity(), MainPost_DetailActivity.class);
+        intent.putExtra("id",post_id);
+        startActivity(intent);
     }
 }

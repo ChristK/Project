@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -37,6 +39,8 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
     private String cityname;
     private String time;
     private String type;
+    private double lat;
+    private double lon;
     private float score;
     private String comment;
     private MyPost_adapter myPostAdapter;
@@ -53,7 +57,6 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
         listView=(ListView)findViewById(R.id.post_lv);
         myPostAdapter =new MyPost_adapter(this,queryPost(username));
         listView.setAdapter(myPostAdapter);
-
         listView.setOnItemClickListener(this);
 
     }
@@ -64,7 +67,6 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
         List<Post> listMaps = new ArrayList<Post>();
         Cursor cursor = database.query(DATABASE_POST_TABLE, new String[]{"_id","photos","cityname","time","type","comment","score"}, "username=?", new String[]{username}, null, null, null);
         if(cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0)  {
-           //Log.i("SQL",String.valueOf(cursor.getCount()));
            do{
                id=cursor.getInt(cursor.getColumnIndex("_id"));
                photo = cursor.getBlob(cursor.getColumnIndex("photos"));
@@ -73,22 +75,13 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
                type = cursor.getString(cursor.getColumnIndex("type"));
                comment = cursor.getString(cursor.getColumnIndex("comment"));
                score = cursor.getFloat(cursor.getColumnIndex("score"));
+
                Post post = new Post(id,photo, comment, type, score, time, cityname);
                listMaps.add(post);
 
-               /**
-                *  Log.i("VAlue",post.getCityname());
-                *                 Log.i("VAlue",post.getComment());
-                *                 Log.i("VAlue",String.valueOf(post.getScore()));
-                *                 Log.i("VAlue",post.getType());
-                *                 Log.i("VAlue",post.getDate());
-                *                 Log.i("VAlue",String.valueOf(post.getPhoto()));
-                *                 Log.i("TEST","+===="+listMaps);
-                */
-
            }while (cursor.moveToNext());
         } else {
-            Log.i("SQl","没值");
+            Log.i("SQl","No value");
             Toast.makeText(PostActivity.this, "No post history", Toast.LENGTH_SHORT).show();
         }
         return listMaps;
@@ -102,6 +95,27 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
         intent.putExtra("id",post_id);
         startActivity(intent);
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu( Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_back,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.back:
+                finish();
+                break;
+
+            default:
+                break;
+        }
+        return true;
+    }
+
 
 
 }

@@ -4,43 +4,22 @@ package com.example.project.Fragment;
 import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.project.Activity.CommentActivity;
-import com.example.project.Activity.MainActivity;
 import com.example.project.Activity.PostActivity;
-import com.example.project.Activity.RegisterActivity;
 import com.example.project.Activity.SetActivity;
-import com.example.project.Bean.Post;
-import com.example.project.DB.DB;
 import com.example.project.R;
 import com.example.project.Util.SharedPerencesUtil;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import static android.content.Context.LOCATION_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -51,8 +30,7 @@ public class UserFragment extends Fragment {
     private TextView username;
     private Button set;
     private TextView post;
-    private TextView comment;
-    private SharedPerencesUtil sp;
+    private SharedPreferences sp;
     public static final String KEY="Username";
 
 
@@ -75,25 +53,19 @@ public class UserFragment extends Fragment {
 
 
         //get Username
-        SharedPreferences sp=getActivity().getSharedPreferences("save",MODE_PRIVATE);
+        sp=getActivity().getSharedPreferences("save",MODE_PRIVATE);
         String str =sp.getString("name",null) ;
+        Log.i("Username",str);
         username.setText(str);
 
 
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 startActivity(new Intent(getActivity(), PostActivity.class));
             }
         });
 
-        comment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), CommentActivity.class));
-            }
-        });
 
         set.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,10 +77,9 @@ public class UserFragment extends Fragment {
     }
 
     private void initControl() {
-        username=(TextView)getActivity().findViewById(R.id.username);
+        username=(TextView)getActivity().findViewById(R.id.name);
         set=(Button)getActivity().findViewById(R.id.set);
         post=(TextView) getActivity().findViewById(R.id.post);
-        comment=(TextView)getActivity().findViewById(R.id.comment);
 
     }
 

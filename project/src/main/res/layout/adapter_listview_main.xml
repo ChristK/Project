@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/photo"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"/>
 
@@ -20,9 +20,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="15dp"
         android:layout_toRightOf="@+id/photo"
-        android:textSize="20dp"
+        android:textSize="25dp"
         android:textColor="#A52A2A"
         android:text="1"/>
 
@@ -41,8 +41,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/username"
-        android:layout_marginTop="80dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="15dp"
         android:layout_toRightOf="@+id/photo"
         android:singleLine="true"
         android:ellipsize="end"

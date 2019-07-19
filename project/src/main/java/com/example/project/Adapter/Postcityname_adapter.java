@@ -3,26 +3,22 @@ package com.example.project.Adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.example.project.Bean.Post;
 import com.example.project.R;
 
 import java.util.List;
 
-public class Post_cityname_adapter extends BaseAdapter {
+public class Postcityname_adapter extends BaseAdapter {
     private List<Post> posts;
     private LayoutInflater inflater;
-    private Context context;
 
-    public Post_cityname_adapter(Context context,List<Post> posts){
-        this.context=context;
+    public Postcityname_adapter(Context context, List<Post> posts){
         this.posts=posts;
         this.inflater=LayoutInflater.from(context);
     }
@@ -72,7 +68,7 @@ public class Post_cityname_adapter extends BaseAdapter {
         Bitmap photoitmap = BitmapFactory.decodeByteArray(photo, 0, photo.length);
         viewHolder.photo.setImageBitmap(photoitmap);
 
-        Log.i("value",String.valueOf(posts.get(position).getScore()));
+        //Log.i("value",String.valueOf(posts.get(position).getScore()));
         return convertView;
     }
 

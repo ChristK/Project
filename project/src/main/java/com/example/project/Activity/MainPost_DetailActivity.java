@@ -1,7 +1,5 @@
 package com.example.project.Activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,16 +7,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.project.DB.DB;
 import com.example.project.R;
 
-public class MyPost_DetailActivity extends AppCompatActivity {
+public class MainPost_DetailActivity extends AppCompatActivity {
 
     /**
      * Table name
@@ -28,47 +26,31 @@ public class MyPost_DetailActivity extends AppCompatActivity {
 
     private static final String DATABASE_POST_TABLE = "table_post";
 
-    private TextView username_tv,type_tv,comment_tv,cityname_tv,score_tv,time_tv,delete_tv,lon_tv,lat_tv;
+    private TextView username_tv,type_tv,comment_tv,cityname_tv,score_tv,time_tv,lon_tv,lat_tv;
     private ImageView photo_iv;
     private Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mypost_detail);
-
+        setContentView(R.layout.activity_mainpost__detail);
         //init control
         init();
-        //Log.i("ID",id+"");
+
         getDetails();
+    }
 
-        delete_tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                final AlertDialog.Builder dialog = new AlertDialog.Builder(MyPost_DetailActivity.this);
-                dialog.setIcon(R.drawable.warning);
-                dialog.setTitle("Warning");
-                dialog.setMessage("Are you sure to delete this post? ");
-                dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        intent=getIntent();
-                        int id=intent.getIntExtra("id",0);
-                        delete(id);
-                        finish();
-                    }
-                });
-
-                dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show();
-
-            }
-        });
+    private void init() {
+        username_tv=(TextView)findViewById(R.id.username);
+        type_tv=(TextView)findViewById(R.id.type);
+        comment_tv=(TextView)findViewById(R.id.comment);
+        cityname_tv=(TextView)findViewById(R.id.cityname);
+        score_tv=(TextView)findViewById(R.id.score);
+        time_tv=(TextView)findViewById(R.id.time);
+        photo_iv=(ImageView) findViewById(R.id.photo);
+        lat_tv=(TextView)findViewById(R.id.lat);
+        lon_tv=(TextView)findViewById(R.id.lon);
     }
 
     @Override
@@ -90,28 +72,14 @@ public class MyPost_DetailActivity extends AppCompatActivity {
         return true;
     }
 
-    private void init() {
-        username_tv=(TextView)findViewById(R.id.username);
-        type_tv=(TextView)findViewById(R.id.type);
-        comment_tv=(TextView)findViewById(R.id.comment);
-        cityname_tv=(TextView)findViewById(R.id.cityname);
-        score_tv=(TextView)findViewById(R.id.score);
-        time_tv=(TextView)findViewById(R.id.time);
-        delete_tv=(TextView)findViewById(R.id.delete);
-        photo_iv=(ImageView) findViewById(R.id.photo);
-        lat_tv=(TextView)findViewById(R.id.lat);
-        lon_tv=(TextView)findViewById(R.id.lon);
-    }
-
 
     private void getDetails(){
         intent=getIntent();
         int id=intent.getIntExtra("id",0);
         String post_id=String.valueOf(id);
-        DB DB = new DB(MyPost_DetailActivity.this);
+        DB DB = new DB(MainPost_DetailActivity.this);
         SQLiteDatabase database = DB.getReadableDatabase();
-        Cursor cursor = database.query(DATABASE_POST_TABLE, new String[]{"username","photos","cityname","time","type","type","comment","score","latitude","longitude"}, "_id=?", new String[]{post_id}, null, null, null);
-        //Log.i("COUNT",cursor.getCount()+"");
+        Cursor cursor = database.query(DATABASE_POST_TABLE, new String[]{"username","photos","cityname","time","type","comment","score","latitude","longitude"}, "_id=?", new String[]{post_id}, null, null, null);
         if (cursor.moveToNext()){
             String username=cursor.getString(cursor.getColumnIndex("username"));
             byte[] photo = cursor.getBlob(cursor.getColumnIndex("photos"));
@@ -122,7 +90,6 @@ public class MyPost_DetailActivity extends AppCompatActivity {
             float score = cursor.getFloat(cursor.getColumnIndex("score"));
             double lat=cursor.getDouble(cursor.getColumnIndex("latitude"));
             double lon=cursor.getDouble(cursor.getColumnIndex("longitude"));
-
 
             Bitmap photoitmap = BitmapFactory.decodeByteArray(photo, 0, photo.length);
 
@@ -139,11 +106,5 @@ public class MyPost_DetailActivity extends AppCompatActivity {
         database.close();
     }
 
-    public void delete(int id){
-        String post_id=String.valueOf(id);
-        DB db=new DB(MyPost_DetailActivity.this);
-        SQLiteDatabase database=db.getReadableDatabase();
-        database.delete(DATABASE_POST_TABLE,"_id=?",new String[]{post_id});
-        database.close();
-    }
+
 }

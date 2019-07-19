@@ -27,8 +27,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.MyPost_DetailActivity"
-            android:label="MyPost_Detail"></activity>
+        <activity android:name=".Activity.MainPost_DetailActivity"
+            android:label="Details"></activity>
+        <activity
+            android:name=".Activity.MyPost_DetailActivity"
+            android:label="MyPost_Details" />
         <activity android:name=".Activity.MomentActivity" />
         <activity
             android:name=".Activity.SetActivity"
