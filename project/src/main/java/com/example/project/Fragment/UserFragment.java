@@ -79,7 +79,7 @@ public class UserFragment extends Fragment {
     private void initControl() {
         username=(TextView)getActivity().findViewById(R.id.name);
         set=(Button)getActivity().findViewById(R.id.set);
-        post=(TextView) getActivity().findViewById(R.id.post);
+        post=(TextView) getActivity().findViewById(R.id.post_tv);
 
     }
 

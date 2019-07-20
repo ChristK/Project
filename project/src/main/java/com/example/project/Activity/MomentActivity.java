@@ -47,8 +47,6 @@ public class MomentActivity extends AppCompatActivity{
     private EditText post_value;
     private ImageView photos;
     private ImageView photo;
-    private RatingBar ratingBar;
-    private RadioGroup type;
     private TextView cityName;
     private TextView lat;
     private TextView lon;
@@ -155,8 +153,6 @@ public class MomentActivity extends AppCompatActivity{
         post_value=(EditText)findViewById(R.id.post_et);
         photos=(ImageView)findViewById(R.id.photos);
         photo = (ImageView) findViewById(R.id.photo);
-        ratingBar=(RatingBar)findViewById(R.id.score_rb);
-        type=(RadioGroup) findViewById(R.id.type);
         lat=(TextView)findViewById(R.id.lat);
         lon=(TextView)findViewById(R.id.longi);
         cityName=(TextView)findViewById(R.id.cityname);
@@ -188,8 +184,6 @@ public class MomentActivity extends AppCompatActivity{
 
         //comment
         String post_et=post_value.getText().toString().trim();
-        //score
-        float score= ratingBar.getRating();
         //cityname
         String cityname=cityName.getText().toString().trim();
         //latitude
@@ -198,9 +192,6 @@ public class MomentActivity extends AppCompatActivity{
         String longitude=lon.getText().toString().trim();
         //time
         String time_value=time.getText().toString().trim();
-        //type
-        button=(RadioButton)findViewById(type.getCheckedRadioButtonId());
-        String type_value=button.getText()+"";
 
         //getUsername
         SharedPreferences sp=getSharedPreferences("save",MODE_PRIVATE);
@@ -215,12 +206,10 @@ public class MomentActivity extends AppCompatActivity{
         ContentValues values=new ContentValues();
         values.put("username",username);
         values.put("comment",post_et);
-        values.put("score",score);
         values.put("cityname",cityname);
         values.put("latitude",latitude);
         values.put("longitude",longitude);
         values.put("time",time_value);
-        values.put("type",type_value);
         values.put("photos",os.toByteArray());
 
         long rowId = database.insert(DATABASE_POST_TABLE, null, values);
@@ -238,16 +227,19 @@ public class MomentActivity extends AppCompatActivity{
             StringBuilder latitude=new StringBuilder();
             latitude.append(location.getLatitude());
             lat.setText(latitude);
+            lat.setVisibility(View.GONE);
 
             StringBuilder longitude=new StringBuilder();
             longitude.append(location.getLongitude());
             lon.setText(longitude);
+            lon.setVisibility(View.GONE);
 
 
 
             SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
             String date = sDateFormat.format(new java.util.Date());
             time.setText(date);
+            time.setVisibility(View.GONE);
 
             {
                 double lat=location.getLatitude();

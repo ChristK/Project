@@ -44,33 +44,31 @@ tools:context=".Fragment.MainFragment">
           android:background="#FFFFE0">
 
             <ImageView
-                android:id="@+id/meat"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:id="@+id/camera"
+                android:layout_width="95dp"
+                android:layout_height="95dp"
                 android:layout_marginLeft="20sp"
-                android:background="@drawable/meat" />
+                android:background="@drawable/camera" />
 
             <ImageView
-                android:id="@+id/coffee"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:id="@+id/post_iv"
+                android:layout_width="95dp"
+                android:layout_height="95dp"
                 android:layout_marginLeft="20sp"
-                android:background="@drawable/coffee"/>
+                android:background="@drawable/album"/>
 
-            <ImageView
-                android:id="@+id/burger"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginLeft="20dp"
-                android:background="@drawable/burger"/>
-
-            <ImageView
-                android:id="@+id/vegetable"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginLeft="20sp"
-                android:background="@drawable/vegetable"/>
     </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/warning"
+        android:layout_below="@+id/navigator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textColor="	#DCDCDC"
+        android:layout_centerHorizontal="true"
+        android:textSize="20dp"/>
 
 
     <ListView

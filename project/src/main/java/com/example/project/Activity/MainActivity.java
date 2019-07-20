@@ -139,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.post:
-
                 Intent intent1=new Intent(MainActivity.this,MomentActivity.class);
                 intent1.putExtra("Username",username);
                 startActivity(intent1);

@@ -27,8 +27,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.MainPost_DetailActivity"
-            android:label="Details"></activity>
+        <activity android:name=".Activity.ResultAcitvity"></activity>
+        <activity android:name=".Surface.CameraViewActivity" />
+        <activity
+            android:name=".Activity.MainPost_DetailActivity"
+            android:label="Details" />
         <activity
             android:name=".Activity.MyPost_DetailActivity"
             android:label="MyPost_Details" />

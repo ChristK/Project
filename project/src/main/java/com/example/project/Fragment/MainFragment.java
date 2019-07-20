@@ -33,6 +33,7 @@ import com.example.project.Adapter.Postcityname_adapter;
 import com.example.project.Bean.Post;
 import com.example.project.DB.DB;
 import com.example.project.R;
+import com.example.project.Surface.CameraViewActivity;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -48,10 +49,9 @@ import static android.content.Context.LOCATION_SERVICE;
  */
 public class MainFragment extends Fragment implements AdapterView.OnItemClickListener {
 
-    private ImageView meat;
-    private ImageView coffee;
-    private ImageView burger;
-    private ImageView vegetable;
+    private ImageView camera;
+    private ImageView post;
+    private TextView warning;
     private ListView listView;
     private EditText et_search;
     private Button btn_search;
@@ -147,23 +147,29 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
         locationUpdates(location);
         String cityname=cityName.getText().toString().trim();
         postcityname_adapter=new Postcityname_adapter(getActivity(),getData(cityname));
+
         listView.setAdapter(postcityname_adapter);
 
-
         listView.setOnItemClickListener(this);
+
+        camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), CameraViewActivity.class));
+            }
+        });
     }
 
 
 
     private void initControl() {
-        meat=(ImageView)getActivity().findViewById(R.id.meat);
-        coffee=(ImageView)getActivity().findViewById(R.id.coffee);
-        burger=(ImageView)getActivity().findViewById(R.id.burger);
-        vegetable=(ImageView)getActivity().findViewById(R.id.vegetable);
+        camera=(ImageView)getActivity().findViewById(R.id.camera);
+        post=(ImageView)getActivity().findViewById(R.id.post_iv);
         et_search=(EditText) getActivity().findViewById(R.id.et_search);
         btn_search=(Button) getActivity().findViewById(R.id.btn_search);
         cityName=(TextView)getActivity().findViewById(R.id.cityname);
         listView=(ListView)getActivity().findViewById(R.id.list_item);
+        warning=(TextView)getActivity().findViewById(R.id.warning);
     }
 
 
@@ -222,7 +228,7 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
 
             }while (cursor.moveToNext());
         }else {
-            Toast.makeText(getActivity(),"No post in this city",Toast.LENGTH_SHORT).show();
+           warning.setText("No post in this city");
         }
         return listMaps;
     }

@@ -22,28 +22,22 @@
         android:layout_below="@+id/user_photo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:textSize="20sp"
+        android:textSize="30sp"
         android:text="username"/>
 
-    <LinearLayout
-        android:id="@+id/ll"
-        android:layout_width="wrap_content"
+
+
+    <TextView
+        android:id="@+id/post_tv"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/name"
-        android:orientation="vertical">
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="20dp"
+        android:onClick="Operator"
+        android:text="My post"
+        android:textSize="20sp"/>
 
-        <TextView
-            android:id="@+id/post"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/ll"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="10dp"
-            android:onClick="Operator"
-            android:text="My post"
-            android:textSize="20sp"/>
-
-    </LinearLayout>
     <Button
         android:id="@+id/set"
         android:layout_width="match_parent"
@@ -52,6 +46,6 @@
         android:textSize="20sp"
         android:onClick="Operator"
         android:text="Setting"
-        android:layout_below="@+id/ll" />
+        android:layout_below="@+id/post_tv" />
 
 </RelativeLayout>
