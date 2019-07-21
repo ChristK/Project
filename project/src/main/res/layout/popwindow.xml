@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/popL"
+    android:orientation="vertical">
+    <TextView
+    android:id="@+id/chinese_food"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:text="Chinese food"/>
+    <TextView
+        android:id="@+id/korean_food"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:text="Korean food"/>
+    <TextView
+        android:id="@+id/turkey_food"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+
+        android:text="Turkey food"/>
+    <TextView
+        android:id="@+id/afternoon_tea"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+
+        android:text="Afternoon tea"/>
+    <TextView
+        android:id="@+id/ice_cream"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+
+        android:text="Ice Cream"/>
+    <TextView
+        android:id="@+id/fast_food"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+
+        android:text="Fast food"/>
+    <TextView
+        android:id="@+id/retailer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+
+        android:text="Retailer"/>
+    <TextView
+        android:id="@+id/japanese_food"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+
+        android:text="Japanese food"/>
+    <TextView
+        android:id="@+id/other"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+
+        android:text="Other"/>
+</LinearLayout>
