@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.project.Activity.MainPost_DetailActivity;
+import com.example.project.Activity.MomentActivity;
 import com.example.project.Adapter.Postcityname_adapter;
 import com.example.project.Bean.Post;
 import com.example.project.DB.DB;
@@ -153,6 +154,12 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), CameraViewActivity.class));
+            }
+        });
+        post.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), MomentActivity.class));
             }
         });
     }

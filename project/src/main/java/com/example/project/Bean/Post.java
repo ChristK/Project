@@ -12,6 +12,12 @@ public class Post {
     private String date;
 
 
+    public Post(String type,byte[] photo){
+        super();
+        this.type=type;
+        this.photo=photo;
+    }
+
 
     public Post(int id,byte[] photo,String comment,String type,String date,String cityname){
         super();

@@ -34,10 +34,11 @@
         android:id="@+id/cityname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
-        android:layout_marginRight="10dp"
-        android:textSize="25dp"
+        android:layout_alignParentRight="true"
+        android:textSize="18sp"
+        android:text="2"
         android:textColor="	#87CEFA"
         android:layout_below="@id/post_et"/>
 
@@ -56,16 +57,24 @@
         android:layout_height="95dp"
         android:src="@drawable/photos"
         android:layout_marginTop="10dp"
-        android:layout_below="@id/post_et"
-        android:layout_alignParentRight="true"/>
+        android:layout_below="@id/post_et"/>
 
     <ImageView
         android:id="@+id/photo"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_below="@id/time"/>
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@id/photos"
+        android:layout_below="@id/post_et"/>
+
+    <ListView
+        android:id="@+id/item_photo"
+        android:layout_below="@+id/photo"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:scrollbars="vertical"></ListView>
 
 
 </RelativeLayout>

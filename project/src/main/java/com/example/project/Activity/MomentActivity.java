@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -18,31 +19,37 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.project.Adapter.PhotoItem_adapter;
+import com.example.project.Bean.Post;
 import com.example.project.DB.DB;
 import com.example.project.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class MomentActivity extends AppCompatActivity{
+public class MomentActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private EditText post_value;
     private ImageView photos;
@@ -51,8 +58,11 @@ public class MomentActivity extends AppCompatActivity{
     private TextView lat;
     private TextView lon;
     private TextView time;
-    private RadioButton button;
+    private String type;
+    private byte[] photo_bit;
     private List<Address> addresses;
+    private ListView listView;
+    private PhotoItem_adapter adapter;
 
 
 
@@ -135,6 +145,11 @@ public class MomentActivity extends AppCompatActivity{
                 Log.i("TAG",username);
             }
         });
+
+        adapter=new PhotoItem_adapter(MomentActivity.this,getData());
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(this);
+
     }
 
 
@@ -157,6 +172,7 @@ public class MomentActivity extends AppCompatActivity{
         lon=(TextView)findViewById(R.id.longi);
         cityName=(TextView)findViewById(R.id.cityname);
         time=(TextView)findViewById(R.id.time);
+        listView=(ListView)findViewById(R.id.item_photo);
     }
 
     //menu button
@@ -170,7 +186,13 @@ public class MomentActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.submit:
-                insertData();
+                if (TextUtils.isEmpty(post_value.getText() )||  photo.getDrawable()==null){
+                    Toast.makeText(MomentActivity.this,"No comment or no picutre!",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    insertData();
+                }
+                break;
             default:
                 break;
         }
@@ -261,6 +283,33 @@ public class MomentActivity extends AppCompatActivity{
         }
     }
 
+
+    public List<Post> getData(){
+        DB db=new DB(MomentActivity.this);
+        SQLiteDatabase database=db.getReadableDatabase();
+        List<Post> listMaps = new ArrayList<Post>();
+        String sql="select distinct photos,type from "+DATABASE_POST_TABLE;
+        Cursor cursor=database.rawQuery(sql,null);
+        //Cursor cursor=database.query(DATABASE_POST_TABLE,new String[]{"type","photos"},null,null,null,null,null);
+        if(cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0){
+            do{
+                type=cursor.getString(cursor.getColumnIndex("type"));
+                photo_bit=cursor.getBlob(cursor.getColumnIndex("photos"));
+
+                Post post=new Post(type,photo_bit);
+                listMaps.add(post);
+
+            }while (cursor.moveToNext());
+        }
+        return listMaps;
+    }
+
+
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+    }
 
 
 }
