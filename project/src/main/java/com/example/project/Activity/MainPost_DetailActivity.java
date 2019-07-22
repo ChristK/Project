@@ -26,7 +26,7 @@ public class MainPost_DetailActivity extends AppCompatActivity {
 
     private static final String DATABASE_POST_TABLE = "table_post";
 
-    private TextView username_tv,type_tv,comment_tv,cityname_tv,score_tv,time_tv,lon_tv,lat_tv;
+    private TextView username_tv,type_tv,comment_tv,cityname_tv,time_tv,lon_tv,lat_tv;
     private ImageView photo_iv;
     private Intent intent;
 
@@ -46,7 +46,6 @@ public class MainPost_DetailActivity extends AppCompatActivity {
         type_tv=(TextView)findViewById(R.id.type);
         comment_tv=(TextView)findViewById(R.id.comment);
         cityname_tv=(TextView)findViewById(R.id.cityname);
-        score_tv=(TextView)findViewById(R.id.score);
         time_tv=(TextView)findViewById(R.id.time);
         photo_iv=(ImageView) findViewById(R.id.photo);
         lat_tv=(TextView)findViewById(R.id.lat);
@@ -79,7 +78,7 @@ public class MainPost_DetailActivity extends AppCompatActivity {
         String post_id=String.valueOf(id);
         DB DB = new DB(MainPost_DetailActivity.this);
         SQLiteDatabase database = DB.getReadableDatabase();
-        Cursor cursor = database.query(DATABASE_POST_TABLE, new String[]{"username","photos","cityname","time","type","comment","score","latitude","longitude"}, "_id=?", new String[]{post_id}, null, null, null);
+        Cursor cursor = database.query(DATABASE_POST_TABLE, new String[]{"username","photos","cityname","time","type","comment","latitude","longitude"}, "_id=?", new String[]{post_id}, null, null, null);
         if (cursor.moveToNext()){
             String username=cursor.getString(cursor.getColumnIndex("username"));
             byte[] photo = cursor.getBlob(cursor.getColumnIndex("photos"));
@@ -87,7 +86,6 @@ public class MainPost_DetailActivity extends AppCompatActivity {
             String time = cursor.getString(cursor.getColumnIndex("time"));
             String type = cursor.getString(cursor.getColumnIndex("type"));
             String comment = cursor.getString(cursor.getColumnIndex("comment"));
-            float score = cursor.getFloat(cursor.getColumnIndex("score"));
             double lat=cursor.getDouble(cursor.getColumnIndex("latitude"));
             double lon=cursor.getDouble(cursor.getColumnIndex("longitude"));
 
@@ -99,7 +97,6 @@ public class MainPost_DetailActivity extends AppCompatActivity {
             time_tv.setText(time);
             type_tv.setText("Type:"+type);
             comment_tv.setText(comment);
-            score_tv.setText("Score:"+score);
             lat_tv.setText("Latitude:"+lat);
             lon_tv.setText("Longitude"+lon);
         }

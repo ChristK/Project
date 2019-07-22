@@ -59,7 +59,6 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
     private int id;
     private String username,time,comment,type;
     private byte[] photo;
-    private float score;
     private Postcityname_adapter postcityname_adapter;
     /**
      * Table name
@@ -210,7 +209,7 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
         DB db=new DB(getActivity());
         SQLiteDatabase database=db.getReadableDatabase();
         List<Post> listMaps = new ArrayList<Post>();
-        Cursor cursor=database.query(DATABASE_POST_TABLE,new String[]{"username","_id","time","comment","score","type","photos"},"cityname=?",new String[]{cityname},null,null,null);
+        Cursor cursor=database.query(DATABASE_POST_TABLE,new String[]{"username","_id","time","comment","type","photos"},"cityname=?",new String[]{cityname},null,null,null);
         if(cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0){
             do{
                 id=cursor.getInt(cursor.getColumnIndex("_id"));
@@ -218,10 +217,9 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
                 time=cursor.getString(cursor.getColumnIndex("time"));
                 type=cursor.getString(cursor.getColumnIndex("type"));
                 comment=cursor.getString(cursor.getColumnIndex("comment"));
-                score=cursor.getFloat(cursor.getColumnIndex("score"));
                 photo=cursor.getBlob(cursor.getColumnIndex("photos"));
 
-                Post post=new Post(id,username,comment,type,time,score,photo);
+                Post post=new Post(id,username,comment,type,time,photo);
                 listMaps.add(post);
 
             }while (cursor.moveToNext());

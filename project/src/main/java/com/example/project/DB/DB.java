@@ -39,7 +39,6 @@ public class DB extends SQLiteOpenHelper {
             "photos blob,"+
             "comment text,"+
             "type text," +
-            "score real,"+
             "latitude real,"+
             "longitude real,"+
             "cityname text,"+
@@ -52,7 +51,7 @@ public class DB extends SQLiteOpenHelper {
     //name:数据库名称
     //factory:游标工厂
     //version:数据库版本号，并且版本号大于0
-    public static final int VERSION=2;
+    public static final int VERSION=3;
 
 
     public DB(Context context) {
@@ -71,7 +70,7 @@ public class DB extends SQLiteOpenHelper {
     //数据库升级
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if(newVersion==2||oldVersion==1){
+        if(newVersion>oldVersion){
             //Update UserInfo
             //1.delete table
             db.execSQL(dropUser);

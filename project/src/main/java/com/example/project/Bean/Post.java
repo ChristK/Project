@@ -6,7 +6,6 @@ public class Post {
     private byte[] photo;
     private String comment;
     private String type;
-    private float score;
     private double latitude;
     private double longitude;
     private String cityname;
@@ -14,49 +13,45 @@ public class Post {
 
 
 
-    public Post(int id,byte[] photo,String comment,String type,float score,String date,String cityname){
+    public Post(int id,byte[] photo,String comment,String type,String date,String cityname){
         super();
         this._id=id;
         this.photo=photo;
         this.comment=comment;
         this.type=type;
-        this.score=score;
         this.cityname=cityname;
         this.date=date;
     }
 
-    public Post(String username,byte[] photo,String comment,String type,float score,String date,String cityname){
+    public Post(String username,byte[] photo,String comment,String type,String date,String cityname){
         super();
         this.Username=username;
         this.photo=photo;
         this.comment=comment;
         this.type=type;
-        this.score=score;
         this.cityname=cityname;
         this.date=date;
     }
 
-    public Post(int id,String username,String comment,String type,String time,float score,byte[] photo){
+    public Post(int id,String username,String comment,String type,String time,byte[] photo){
         super();
         this._id=id;
         this.Username=username;
         this.comment=comment;
         this.type=type;
         this.date=time;
-        this.score=score;
         this.photo=photo;
 
 
     }
 
-    public Post(int id,String username,byte[] photo,String comment,String type,float score,double latitude,double longitude,String cityname,String date){
+    public Post(int id,String username,byte[] photo,String comment,String type,double latitude,double longitude,String cityname,String date){
         super();
         this._id=id;
         this.Username=username;
         this.photo=photo;
         this.comment=comment;
         this.type=type;
-        this.score=score;
         this.latitude=latitude;
         this.longitude=longitude;
         this.cityname=cityname;
@@ -104,13 +99,6 @@ public class Post {
         this.type = type;
     }
 
-    public float getScore() {
-        return score;
-    }
-
-    public void setScore(float score) {
-        this.score = score;
-    }
 
     public double getLatitude() {
         return latitude;

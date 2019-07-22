@@ -52,7 +52,6 @@ public class Postcityname_adapter extends BaseAdapter {
             viewHolder.comment=(TextView)convertView.findViewById(R.id.comment);
             viewHolder.type=(TextView)convertView.findViewById(R.id.type);
             viewHolder.time=(TextView)convertView.findViewById(R.id.time);
-            viewHolder.score=(TextView)convertView.findViewById(R.id.score);
             viewHolder.photo=(ImageView) convertView.findViewById(R.id.photo);
             convertView.setTag(viewHolder);
         }else {
@@ -62,7 +61,6 @@ public class Postcityname_adapter extends BaseAdapter {
         viewHolder.username.setText(posts.get(position).getUsername());
         viewHolder.type.setText("Type:"+posts.get(position).getType());
         viewHolder.time.setText(posts.get(position).getDate());
-        viewHolder.score.setText("Score:"+String.valueOf(posts.get(position).getScore()));
         viewHolder.comment.setText(posts.get(position).getComment());
         byte[] photo=posts.get(position).getPhoto();
         Bitmap photoitmap = BitmapFactory.decodeByteArray(photo, 0, photo.length);
@@ -73,7 +71,7 @@ public class Postcityname_adapter extends BaseAdapter {
     }
 
     private class viewHolder{
-        private TextView username,comment,time,type,score,id;
+        private TextView username,comment,time,type,id;
         private ImageView photo;
     }
 
