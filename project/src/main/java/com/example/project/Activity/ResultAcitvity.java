@@ -218,14 +218,14 @@ public class ResultAcitvity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String type = text.getText().toString();
                         int size = type.length();
-                        if (size == 0 || size > 50) {
-                            buildEditDialog();
-                            String add_type=text.getText().toString().trim();
-                            insertData(add_type);
-                            Toast.makeText(mContext, "Successful add new type:"+add_type+"!\nPost successful!", Toast.LENGTH_SHORT).show();
-                        } else {
+                        if (size == 0) {
+                            Toast.makeText(mContext, "Sorry!Please enter type", Toast.LENGTH_SHORT).show();
+                        } else if (size>10){
+                            Toast.makeText(mContext,"Sorry!The number of words you entered is out of range",Toast.LENGTH_SHORT).show();
+                        } else{
                             addType(type);
-                            Toast.makeText(mContext,"Add successful",Toast.LENGTH_SHORT).show();
+                            insertData(type);
+                            Toast.makeText(mContext,"Add successful! Type:"+type+"\nPost Successful!",Toast.LENGTH_LONG).show();
                         }
 
                     }

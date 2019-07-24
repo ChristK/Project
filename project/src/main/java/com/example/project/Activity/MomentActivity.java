@@ -2,12 +2,15 @@ package com.example.project.Activity;
 
 import android.Manifest;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -17,6 +20,7 @@ import android.location.LocationManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -32,10 +36,12 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.project.Adapter.PhotoItem_adapter;
+import com.example.project.Adapter.PopItem_adapter;
 import com.example.project.Bean.Post;
 import com.example.project.DB.DB;
 import com.example.project.R;
@@ -49,7 +55,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class MomentActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class MomentActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener {
 
     private EditText post_value;
     private ImageView photos;
@@ -63,6 +69,11 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
     private List<Address> addresses;
     private ListView listView;
     private PhotoItem_adapter adapter;
+    private Spinner spinner_type;
+    private PopItem_adapter adapter_type;
+    private ArrayList list=new ArrayList();
+    private TextView type_value;
+    private Context mContext;
 
 
 
@@ -80,8 +91,11 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_moment);
 
+        mContext=MomentActivity.this;
         //init control
         init();
+
+        initList();;
 
         LocationManager locationManager=(LocationManager)getSystemService(LOCATION_SERVICE);
 
@@ -123,6 +137,7 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         Location location=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         locationUpdates(location);
 
+        //choose photo from photo albumn
         photos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,24 +147,18 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
             }
         });
 
-        photo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
-        cityName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=getIntent();
-                String username=intent.getStringExtra("Username");
-                Log.i("TAG",username);
-            }
-        });
 
+
+        //listview adapter
         adapter=new PhotoItem_adapter(MomentActivity.this,getData());
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
 
+
+        //spinner adpater
+        adapter_type=new PopItem_adapter(MomentActivity.this,list);
+        spinner_type.setAdapter(adapter_type);
+        spinner_type.setOnItemSelectedListener(this);
     }
 
 
@@ -173,6 +182,23 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         cityName=(TextView)findViewById(R.id.cityname);
         time=(TextView)findViewById(R.id.time);
         listView=(ListView)findViewById(R.id.item_photo);
+        spinner_type=(Spinner)findViewById(R.id.type);
+        type_value=(TextView)findViewById(R.id.type_value);
+    }
+
+    private void initList(){
+        list.add("Chinese food");
+        list.add("Korean food");
+        list.add("Japanese food");
+        list.add("Tuekey food");
+        list.add("Fast food");
+        list.add("Aftenoon tea");
+        list.add("Ice cream");
+        list.add("Retalier");
+        list.add("Add");
+    }
+    private void addType(String type){
+        list.add(type);
     }
 
     //menu button
@@ -187,7 +213,7 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         switch (item.getItemId()){
             case R.id.submit:
                 if (TextUtils.isEmpty(post_value.getText() )||  photo.getDrawable()==null){
-                    Toast.makeText(MomentActivity.this,"No comment or no picutre!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MomentActivity.this,"No comment or picture!",Toast.LENGTH_SHORT).show();
                 }
                 else {
                     insertData();
@@ -214,6 +240,8 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         String longitude=lon.getText().toString().trim();
         //time
         String time_value=time.getText().toString().trim();
+        //type
+        String type=type_value.getText().toString().trim();
 
         //getUsername
         SharedPreferences sp=getSharedPreferences("save",MODE_PRIVATE);
@@ -232,6 +260,7 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         values.put("latitude",latitude);
         values.put("longitude",longitude);
         values.put("time",time_value);
+        values.put("type",type);
         values.put("photos",os.toByteArray());
 
         long rowId = database.insert(DATABASE_POST_TABLE, null, values);
@@ -304,12 +333,57 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         return listMaps;
     }
 
+    private void buildEditDialog() {
+        final EditText text = new EditText(mContext);
+        new AlertDialog.Builder(mContext).setTitle("Add Type")
+                .setView(text)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String type = text.getText().toString();
+                        int size = type.length();
+                        if (size == 0) {
+                            Toast.makeText(mContext, "Sorry!Please enter type", Toast.LENGTH_SHORT).show();
+                        } else if (size>10){
+                            Toast.makeText(mContext,"Sorry!The number of words you entered is out of range",Toast.LENGTH_SHORT).show();
+                        } else{
+                            addType(type);
+                            Toast.makeText(mContext,"Successful add type:"+type,Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
 
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+        Post post=(Post) adapter.getItem(position);
+        byte[] img=post.getPhoto();
+        Bitmap photoitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+        photo.setImageBitmap(photoitmap);
+
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (position==8){
+            buildEditDialog();
+        }else {
+            String type_name=adapter_type.getItem(position).toString();
+            type_value.setText(type_name);
+            type_value.setVisibility(View.GONE);
+            Toast.makeText(MomentActivity.this,type_name,Toast.LENGTH_SHORT).show();
+        }
+    }
 
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }

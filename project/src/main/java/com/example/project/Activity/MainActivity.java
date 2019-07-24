@@ -123,35 +123,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //Menu
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.take:
-                Intent intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivity(intent);
-                break;
-
-            case R.id.post:
-                Intent intent1=new Intent(MainActivity.this,MomentActivity.class);
-                intent1.putExtra("Username",username);
-                startActivity(intent1);
-                break;
-
-            default:
-                break;
-        }
-        return true;
-    }
-
-
-
     View.OnClickListener onClickListener=new View.OnClickListener() {
         @Override
         public void onClick(View v) {

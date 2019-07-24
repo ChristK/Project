@@ -27,7 +27,7 @@ public class PopItem_adapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return position;
+        return list.get(position);
     }
 
     @Override
