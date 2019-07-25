@@ -11,7 +11,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -22,6 +21,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -29,12 +29,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +40,6 @@ import com.example.project.Adapter.PopItem_adapter;
 import com.example.project.DB.DB;
 import com.example.project.R;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -149,6 +146,7 @@ public class ResultAcitvity extends AppCompatActivity {
                 finish();
             }
         });
+
     }
 
     private void initPop(View v){
@@ -218,14 +216,14 @@ public class ResultAcitvity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String type = text.getText().toString();
                         int size = type.length();
-                        if (size == 0) {
-                            Toast.makeText(mContext, "Sorry!Please enter type", Toast.LENGTH_SHORT).show();
-                        } else if (size>10){
-                            Toast.makeText(mContext,"Sorry!The number of words you entered is out of range",Toast.LENGTH_SHORT).show();
-                        } else{
+                        if (list.contains(type)==true){
+                            Toast.makeText(mContext,"This type is exist",Toast.LENGTH_SHORT).show();
+                        }else if (size==0 || size >10){
+                            Toast.makeText(mContext,"Input error",Toast.LENGTH_SHORT).show();
+                        }else {
                             addType(type);
                             insertData(type);
-                            Toast.makeText(mContext,"Add successful! Type:"+type+"\nPost Successful!",Toast.LENGTH_LONG).show();
+                            Toast.makeText(mContext,"Add type "+type+" successful!\nPost Successful!",Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -233,6 +231,7 @@ public class ResultAcitvity extends AppCompatActivity {
                 .setNegativeButton("Cancel", null)
                 .show();
     }
+
 
 
     private void initList(){
@@ -244,7 +243,7 @@ public class ResultAcitvity extends AppCompatActivity {
         list.add("Fast food");
         list.add("Aftenoon tea");
         list.add("Ice cream");
-        list.add("Retalier");
+        list.add("Retailer");
     }
     private void addType(String type){
         list.add(type);

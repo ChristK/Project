@@ -80,13 +80,16 @@
         android:layout_toRightOf="@id/photos"
         android:layout_below="@id/post_et"/>
 
-    <ListView
-        android:id="@+id/item_photo"
+    <GridView
+        android:id="@+id/allPhoto"
         android:layout_below="@+id/photo"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:scrollbars="vertical"></ListView>
+        android:gravity="center"
+        android:background="#F5F5DC"
+        android:scrollbars="vertical"
+        android:numColumns="3"></GridView>
 
 
 </RelativeLayout>

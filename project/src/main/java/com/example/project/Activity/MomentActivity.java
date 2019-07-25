@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -28,18 +29,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.project.Adapter.PhotoItem_adapter;
 import com.example.project.Adapter.PopItem_adapter;
 import com.example.project.Bean.Post;
@@ -47,13 +48,12 @@ import com.example.project.DB.DB;
 import com.example.project.R;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 public class MomentActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener {
 
@@ -67,37 +67,39 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
     private String type;
     private byte[] photo_bit;
     private List<Address> addresses;
-    private ListView listView;
+    private GridView gridView;
     private PhotoItem_adapter adapter;
     private Spinner spinner_type;
     private PopItem_adapter adapter_type;
-    private ArrayList list=new ArrayList();
+    private ArrayList list = new ArrayList();
     private TextView type_value;
     private Context mContext;
-
-
+    private List<String> paths = new ArrayList<String>();
+    private Point mPoint = new Point(0, 0);
 
     /**
      * Table name
      */
     //userTable
-    public static final String DATABASE_USER_TABLE="table_user";
+    public static final String DATABASE_USER_TABLE = "table_user";
 
 
-    private static final String DATABASE_POST_TABLE="table_post";
+    private static final String DATABASE_POST_TABLE = "table_post";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_moment);
 
-        mContext=MomentActivity.this;
+        mContext = MomentActivity.this;
+
         //init control
         init();
 
-        initList();;
+        initList();
+        ;
 
-        LocationManager locationManager=(LocationManager)getSystemService(LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(MomentActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MomentActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -134,59 +136,73 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
                     }
                 });
 
-        Location location=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         locationUpdates(location);
 
         //choose photo from photo albumn
         photos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK,null);
+                Intent intent = new Intent(Intent.ACTION_PICK, null);
                 intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
                 startActivityForResult(intent, 100);
             }
         });
 
 
-
-        //listview adapter
-        adapter=new PhotoItem_adapter(MomentActivity.this,getData());
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(this);
-
+        //gridview adapter
+        adapter = new PhotoItem_adapter(MomentActivity.this,paths);
+        gridView.setAdapter(adapter);
+        gridView.setOnItemClickListener(this);
 
         //spinner adpater
-        adapter_type=new PopItem_adapter(MomentActivity.this,list);
+        adapter_type = new PopItem_adapter(MomentActivity.this, list);
         spinner_type.setAdapter(adapter_type);
         spinner_type.setOnItemSelectedListener(this);
+
+        getAllPaths();
     }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && requestCode == 100){
-            if(data != null){
+        if (resultCode == RESULT_OK && requestCode == 100) {
+            if (data != null) {
                 // data.getData()就是选择图片的URI
                 photo.setImageURI(data.getData());
             }
         }
     }
 
-    private void init() {
-        post_value=(EditText)findViewById(R.id.post_et);
-        photos=(ImageView)findViewById(R.id.photos);
-        photo = (ImageView) findViewById(R.id.photo);
-        lat=(TextView)findViewById(R.id.lat);
-        lon=(TextView)findViewById(R.id.longi);
-        cityName=(TextView)findViewById(R.id.cityname);
-        time=(TextView)findViewById(R.id.time);
-        listView=(ListView)findViewById(R.id.item_photo);
-        spinner_type=(Spinner)findViewById(R.id.type);
-        type_value=(TextView)findViewById(R.id.type_value);
+
+    private void getAllPaths() {
+        Cursor cursor = getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null, null, null);
+        //遍历相册
+        while (cursor.moveToNext()) {
+            String path = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+            //将图片路径添加到集合
+            paths.add(path);
+        }
+        cursor.close();
     }
 
-    private void initList(){
+
+    private void init() {
+        post_value = (EditText) findViewById(R.id.post_et);
+        photos = (ImageView) findViewById(R.id.photos);
+        photo = (ImageView) findViewById(R.id.photo);
+        lat = (TextView) findViewById(R.id.lat);
+        lon = (TextView) findViewById(R.id.longi);
+        cityName = (TextView) findViewById(R.id.cityname);
+        time = (TextView) findViewById(R.id.time);
+        gridView = (GridView) findViewById(R.id.allPhoto);
+        spinner_type = (Spinner) findViewById(R.id.type);
+        type_value = (TextView) findViewById(R.id.type_value);
+    }
+
+    private void initList() {
         list.add("Chinese food");
         list.add("Korean food");
         list.add("Japanese food");
@@ -197,25 +213,25 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         list.add("Retalier");
         list.add("Add");
     }
-    private void addType(String type){
+
+    private void addType(String type) {
         list.add(type);
     }
 
     //menu button
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_moment,menu);
+        getMenuInflater().inflate(R.menu.menu_moment, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.submit:
-                if (TextUtils.isEmpty(post_value.getText() )||  photo.getDrawable()==null){
-                    Toast.makeText(MomentActivity.this,"No comment or picture!",Toast.LENGTH_SHORT).show();
-                }
-                else {
+                if (TextUtils.isEmpty(post_value.getText()) || photo.getDrawable() == null) {
+                    Toast.makeText(MomentActivity.this, "No comment or picture!", Toast.LENGTH_SHORT).show();
+                } else {
                     insertData();
                 }
                 break;
@@ -225,66 +241,65 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         return true;
     }
 
-    private void insertData(){
+    private void insertData() {
 
         DB DB = new DB(MomentActivity.this);
         SQLiteDatabase database = DB.getReadableDatabase();
 
         //comment
-        String post_et=post_value.getText().toString().trim();
+        String post_et = post_value.getText().toString().trim();
         //cityname
-        String cityname=cityName.getText().toString().trim();
+        String cityname = cityName.getText().toString().trim();
         //latitude
-        String latitude=lat.getText().toString().trim();
+        String latitude = lat.getText().toString().trim();
         //longitude
-        String longitude=lon.getText().toString().trim();
+        String longitude = lon.getText().toString().trim();
         //time
-        String time_value=time.getText().toString().trim();
+        String time_value = time.getText().toString().trim();
         //type
-        String type=type_value.getText().toString().trim();
+        String type = type_value.getText().toString().trim();
 
         //getUsername
-        SharedPreferences sp=getSharedPreferences("save",MODE_PRIVATE);
-        String username =sp.getString("name",null) ;
+        SharedPreferences sp = getSharedPreferences("save", MODE_PRIVATE);
+        String username = sp.getString("name", null);
 
         //photo
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
-        Bitmap bitmap=((BitmapDrawable)photo.getDrawable()).getBitmap();
+        Bitmap bitmap = ((BitmapDrawable) photo.getDrawable()).getBitmap();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
 
         //package
-        ContentValues values=new ContentValues();
-        values.put("username",username);
-        values.put("comment",post_et);
-        values.put("cityname",cityname);
-        values.put("latitude",latitude);
-        values.put("longitude",longitude);
-        values.put("time",time_value);
-        values.put("type",type);
-        values.put("photos",os.toByteArray());
+        ContentValues values = new ContentValues();
+        values.put("username", username);
+        values.put("comment", post_et);
+        values.put("cityname", cityname);
+        values.put("latitude", latitude);
+        values.put("longitude", longitude);
+        values.put("time", time_value);
+        values.put("type", type);
+        values.put("photos", os.toByteArray());
 
         long rowId = database.insert(DATABASE_POST_TABLE, null, values);
-        if (rowId!=-1){
-            Intent intent=new Intent(this,PostActivity.class);
+        if (rowId != -1) {
+            Intent intent = new Intent(this, PostActivity.class);
             startActivity(intent);
-            Toast.makeText(this,"Post Successful!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Post Successful!", Toast.LENGTH_SHORT).show();
             finish();
         }
         database.close();
     }
 
-    public void locationUpdates(Location location){
-        if (location!=null){
-            StringBuilder latitude=new StringBuilder();
+    public void locationUpdates(Location location) {
+        if (location != null) {
+            StringBuilder latitude = new StringBuilder();
             latitude.append(location.getLatitude());
             lat.setText(latitude);
             lat.setVisibility(View.GONE);
 
-            StringBuilder longitude=new StringBuilder();
+            StringBuilder longitude = new StringBuilder();
             longitude.append(location.getLongitude());
             lon.setText(longitude);
             lon.setVisibility(View.GONE);
-
 
 
             SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -293,17 +308,17 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
             time.setVisibility(View.GONE);
 
             {
-                double lat=location.getLatitude();
-                double lon=location.getLongitude();
+                double lat = location.getLatitude();
+                double lon = location.getLongitude();
 
                 Geocoder geocoder = new Geocoder(MomentActivity.this, Locale.getDefault());
                 try {
-                    addresses = geocoder.getFromLocation(lat,lon,1);
+                    addresses = geocoder.getFromLocation(lat, lon, 1);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
-                if(addresses!=null||addresses.size()>0) {
+                if (addresses != null || addresses.size() > 0) {
                     String locality = addresses.get(0).getLocality();
                     cityName.setText(locality);
 
@@ -313,22 +328,22 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
 
-    public List<Post> getData(){
-        DB db=new DB(MomentActivity.this);
-        SQLiteDatabase database=db.getReadableDatabase();
+    public List<Post> getData() {
+        DB db = new DB(MomentActivity.this);
+        SQLiteDatabase database = db.getReadableDatabase();
         List<Post> listMaps = new ArrayList<Post>();
-        String sql="select distinct photos,type from "+DATABASE_POST_TABLE;
-        Cursor cursor=database.rawQuery(sql,null);
+        String sql = "select distinct photos,type from " + DATABASE_POST_TABLE;
+        Cursor cursor = database.rawQuery(sql, null);
         //Cursor cursor=database.query(DATABASE_POST_TABLE,new String[]{"type","photos"},null,null,null,null,null);
-        if(cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0){
-            do{
-                type=cursor.getString(cursor.getColumnIndex("type"));
-                photo_bit=cursor.getBlob(cursor.getColumnIndex("photos"));
+        if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
+            do {
+                type = cursor.getString(cursor.getColumnIndex("type"));
+                photo_bit = cursor.getBlob(cursor.getColumnIndex("photos"));
 
-                Post post=new Post(type,photo_bit);
+                Post post = new Post(type, photo_bit);
                 listMaps.add(post);
 
-            }while (cursor.moveToNext());
+            } while (cursor.moveToNext());
         }
         return listMaps;
     }
@@ -345,11 +360,11 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
                         int size = type.length();
                         if (size == 0) {
                             Toast.makeText(mContext, "Sorry!Please enter type", Toast.LENGTH_SHORT).show();
-                        } else if (size>10){
-                            Toast.makeText(mContext,"Sorry!The number of words you entered is out of range",Toast.LENGTH_SHORT).show();
-                        } else{
+                        } else if (size > 10) {
+                            Toast.makeText(mContext, "Sorry!The number of words you entered is out of range", Toast.LENGTH_SHORT).show();
+                        } else {
                             addType(type);
-                            Toast.makeText(mContext,"Successful add type:"+type,Toast.LENGTH_LONG).show();
+                            Toast.makeText(mContext, "Successful add type:" + type, Toast.LENGTH_LONG).show();
                         }
 
                     }
@@ -359,31 +374,28 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
 
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-        Post post=(Post) adapter.getItem(position);
-        byte[] img=post.getPhoto();
-        Bitmap photoitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
-        photo.setImageBitmap(photoitmap);
-
-    }
-
+    //spinner
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (position==8){
+        if (position == 8) {
             buildEditDialog();
-        }else {
-            String type_name=adapter_type.getItem(position).toString();
+        } else {
+            String type_name = adapter_type.getItem(position).toString();
             type_value.setText(type_name);
             type_value.setVisibility(View.GONE);
-            Toast.makeText(MomentActivity.this,type_name,Toast.LENGTH_SHORT).show();
+            Toast.makeText(MomentActivity.this, type_name, Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    //gridview
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(mContext,"clicked"+id,Toast.LENGTH_SHORT).show();
+        Log.i("TEst",id+"");
     }
 }

@@ -8,29 +8,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.example.project.Bean.Post;
 import com.example.project.R;
 
 import java.util.List;
 
 public class PhotoItem_adapter extends BaseAdapter {
 
-    private List<Post> posts;
-    private LayoutInflater inflater;
-    public PhotoItem_adapter(Context context,List<Post> posts){
-        this.posts=posts;
-        this.inflater=LayoutInflater.from(context);
+    private List<String > paths;
+    private Context context;
+
+    public PhotoItem_adapter(Context context, List<String> paths){
+        this.context=context;
+        this.paths=paths;
     }
     @Override
     public int getCount() {
-        return posts.size();
+        return paths.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return posts.get(position);
+        return paths.get(position);
     }
 
     @Override
@@ -40,30 +39,26 @@ public class PhotoItem_adapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        viewHolder viewHolder=null;
-        if (convertView==null){
-            convertView=inflater.inflate(R.layout.adapter_listview_post,null);
+       viewHolder viewHolder = null;
+        if (convertView == null) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.adapter_imageview_allphoto, null);
             //find control
-            viewHolder=new viewHolder();
-            viewHolder.photo=(ImageView) convertView.findViewById(R.id.photo_item);
-            viewHolder.type=(TextView)convertView.findViewById(R.id.type);
+            viewHolder = new viewHolder();
+            viewHolder.photo_item = (ImageView) convertView.findViewById(R.id.photo_item);
 
             convertView.setTag(viewHolder);
-        }
-        else {
-            viewHolder=(viewHolder)convertView.getTag();
+        } else {
+            viewHolder = (viewHolder) convertView.getTag();
         }
         //set data
-        viewHolder.type.setText("Type:"+posts.get(position).getType());
-        byte[] photo=posts.get(position).getPhoto();
-        Bitmap photoitmap = BitmapFactory.decodeByteArray(photo, 0, photo.length);
-        viewHolder.photo.setImageBitmap(photoitmap);
-
+        String path = paths.get(position);
+        Bitmap bitmap=BitmapFactory.decodeFile(path);
+        viewHolder.photo_item.setImageBitmap(bitmap);
         return convertView;
     }
 
-    private class viewHolder{
-        private TextView type;
-        private ImageView photo;
+    public class viewHolder {
+        public ImageView photo_item;
     }
 }
+
