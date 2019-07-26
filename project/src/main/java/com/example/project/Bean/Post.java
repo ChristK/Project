@@ -17,6 +17,10 @@ public class Post {
         this.type=type;
         this.photo=photo;
     }
+    private Post(byte[] photo){
+        super();
+        this.photo=photo;
+    }
 
 
     public Post(int id,byte[] photo,String comment,String type,String date,String cityname){

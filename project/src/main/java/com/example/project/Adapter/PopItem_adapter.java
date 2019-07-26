@@ -1,6 +1,7 @@
 package com.example.project.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,7 @@ public class PopItem_adapter extends BaseAdapter {
             vh = (ViewHolder) convertView.getTag();
         }
         vh.textview.setText(list.get(position) + "");
+        //Log.i("Value",position+"");
         return convertView;
     }
     static class ViewHolder {

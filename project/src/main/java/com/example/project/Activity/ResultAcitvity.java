@@ -17,6 +17,8 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.ExifInterface;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -39,13 +41,17 @@ import android.widget.Toast;
 import com.example.project.Adapter.PopItem_adapter;
 import com.example.project.DB.DB;
 import com.example.project.R;
+import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -65,6 +71,8 @@ public class ResultAcitvity extends AppCompatActivity {
     private TextView lat;
     private TextView lon;
     private TextView time;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
 
     /**
@@ -84,6 +92,7 @@ public class ResultAcitvity extends AppCompatActivity {
         init();
         initList();
         getPic();
+
 
         LocationManager locationManager=(LocationManager)getSystemService(LOCATION_SERVICE);
 
@@ -159,10 +168,7 @@ public class ResultAcitvity extends AppCompatActivity {
         final PopupWindow popWindow = new PopupWindow(view,
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
 
-        popWindow.setAnimationStyle(R.style.mypopwindow_anim_style);//设置加载动画
-        //这些为了点击非PopupWindow区域，PopupWindow会消失的，如果没有下面的
-        //代码的话，你会发现，当你把PopupWindow显示出来了，无论你按多少次后退键
-        //PopupWindow并不会关闭，而且退不出程序，加上下述代码可以解决这个问题
+        popWindow.setAnimationStyle(R.style.mypopwindow_anim_style);//setting load animation
         popWindow.setTouchable(true);
         popWindow.setTouchInterceptor(new View.OnTouchListener() {
             @Override
@@ -199,7 +205,11 @@ public class ResultAcitvity extends AppCompatActivity {
                     buildEditDialog();
                 }
                 else {
-                    insertData(list.get(position).toString());
+                    try {
+                        insertData(list.get(position).toString());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     Toast.makeText(ResultAcitvity.this,"Successful post! \nThe type is : "+list.get(position),Toast.LENGTH_SHORT).show();
                 }
             }
@@ -222,7 +232,12 @@ public class ResultAcitvity extends AppCompatActivity {
                             Toast.makeText(mContext,"Input error",Toast.LENGTH_SHORT).show();
                         }else {
                             addType(type);
-                            insertData(type);
+                            try {
+                                insertData(type);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
                             Toast.makeText(mContext,"Add type "+type+" successful!\nPost Successful!",Toast.LENGTH_SHORT).show();
                         }
 
@@ -231,8 +246,6 @@ public class ResultAcitvity extends AppCompatActivity {
                 .setNegativeButton("Cancel", null)
                 .show();
     }
-
-
 
     private void initList(){
         list.add("Add");
@@ -283,7 +296,7 @@ public class ResultAcitvity extends AppCompatActivity {
     }
 
 
-    private void insertData(String type){
+    private void insertData(String type) throws IOException {
 
         DB DB = new DB(ResultAcitvity.this);
         SQLiteDatabase database = DB.getReadableDatabase();
@@ -302,9 +315,6 @@ public class ResultAcitvity extends AppCompatActivity {
         String username =sp.getString("name",null) ;
 
         //photo
-
-
-
         String path = getIntent().getStringExtra("picPath");
         try {
             FileInputStream fis = new FileInputStream(path);
@@ -320,6 +330,9 @@ public class ResultAcitvity extends AppCompatActivity {
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
 
+        byte[] photo=os.toByteArray();
+
+
         //package
         ContentValues values=new ContentValues();
         values.put("username",username);
@@ -327,7 +340,7 @@ public class ResultAcitvity extends AppCompatActivity {
         values.put("latitude",latitude);
         values.put("longitude",longitude);
         values.put("time",time_value);
-        values.put("photos",os.toByteArray());
+        values.put("photos",photo);
         values.put("type",type);
 
         long rowId = database.insert(DATABASE_POST_TABLE, null, values);

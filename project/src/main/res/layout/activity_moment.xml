@@ -82,14 +82,14 @@
 
     <GridView
         android:id="@+id/allPhoto"
-        android:layout_below="@+id/photo"
-        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:gravity="center"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/photo"
+        android:layout_marginTop="6dp"
         android:background="#F5F5DC"
-        android:scrollbars="vertical"
-        android:numColumns="3"></GridView>
+        android:gravity="center"
+        android:numColumns="3"
+        android:scrollbars="vertical"></GridView>
 
 
 </RelativeLayout>

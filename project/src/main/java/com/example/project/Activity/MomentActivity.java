@@ -18,6 +18,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.ExifInterface;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -29,9 +30,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -39,8 +38,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.project.Adapter.PhotoItem_adapter;
 import com.example.project.Adapter.PopItem_adapter;
 import com.example.project.Bean.Post;
@@ -52,6 +49,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -74,8 +72,7 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
     private ArrayList list = new ArrayList();
     private TextView type_value;
     private Context mContext;
-    private List<String> paths = new ArrayList<String>();
-    private Point mPoint = new Point(0, 0);
+    private ArrayList paths = new ArrayList<>();
 
     /**
      * Table name
@@ -150,8 +147,10 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         });
 
 
+        getAllPaths();
+
         //gridview adapter
-        adapter = new PhotoItem_adapter(MomentActivity.this,paths);
+        adapter = new PhotoItem_adapter(MomentActivity.this, paths);
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(this);
 
@@ -160,7 +159,6 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         spinner_type.setAdapter(adapter_type);
         spinner_type.setOnItemSelectedListener(this);
 
-        getAllPaths();
     }
 
 
@@ -177,8 +175,7 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
 
 
     private void getAllPaths() {
-        Cursor cursor = getContentResolver().query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null, null, null);
+        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null, null, null);
         //遍历相册
         while (cursor.moveToNext()) {
             String path = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
@@ -267,6 +264,8 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
         Bitmap bitmap = ((BitmapDrawable) photo.getDrawable()).getBitmap();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
+        byte[] photo=os.toByteArray();
+
 
         //package
         ContentValues values = new ContentValues();
@@ -277,7 +276,7 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         values.put("longitude", longitude);
         values.put("time", time_value);
         values.put("type", type);
-        values.put("photos", os.toByteArray());
+        values.put("photos", photo);
 
         long rowId = database.insert(DATABASE_POST_TABLE, null, values);
         if (rowId != -1) {
@@ -327,27 +326,6 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         }
     }
 
-
-    public List<Post> getData() {
-        DB db = new DB(MomentActivity.this);
-        SQLiteDatabase database = db.getReadableDatabase();
-        List<Post> listMaps = new ArrayList<Post>();
-        String sql = "select distinct photos,type from " + DATABASE_POST_TABLE;
-        Cursor cursor = database.rawQuery(sql, null);
-        //Cursor cursor=database.query(DATABASE_POST_TABLE,new String[]{"type","photos"},null,null,null,null,null);
-        if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
-            do {
-                type = cursor.getString(cursor.getColumnIndex("type"));
-                photo_bit = cursor.getBlob(cursor.getColumnIndex("photos"));
-
-                Post post = new Post(type, photo_bit);
-                listMaps.add(post);
-
-            } while (cursor.moveToNext());
-        }
-        return listMaps;
-    }
-
     private void buildEditDialog() {
         final EditText text = new EditText(mContext);
         new AlertDialog.Builder(mContext).setTitle("Add Type")
@@ -392,10 +370,93 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
 
     }
 
+
+
     //gridview
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(mContext,"clicked"+id,Toast.LENGTH_SHORT).show();
-        Log.i("TEst",id+"");
+        String path = paths.get(position).toString();
+        Bitmap bitmap=BitmapFactory.decodeFile(path);
+        photo.setImageBitmap(bitmap);
+        Log.i("test",path);
+        getInfor(path);
+        getLocation(path);
+    }
+
+
+
+    private void getInfor(String path) {
+        File file = new File(path);
+        String Datetime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+                        .format(new Date(file.lastModified()));
+        Toast.makeText(mContext, Datetime, Toast.LENGTH_SHORT).show();
+    }
+
+    private void getLocation(String path){
+        try {
+            ExifInterface exifInterface=new ExifInterface(path);
+
+            String orientation = exifInterface.getAttribute(ExifInterface.TAG_ORIENTATION);
+            String dateTime = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
+            String make = exifInterface.getAttribute(ExifInterface.TAG_MAKE);
+            String model = exifInterface.getAttribute(ExifInterface.TAG_MODEL);
+            String flash = exifInterface.getAttribute(ExifInterface.TAG_FLASH);
+            String imageLength = exifInterface.getAttribute(ExifInterface.TAG_IMAGE_LENGTH);
+            String imageWidth = exifInterface.getAttribute(ExifInterface.TAG_IMAGE_WIDTH);
+            String latitude = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
+            String longitude = exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
+            String latitudeRef = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
+            String longitudeRef = exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF);
+            String exposureTime = exifInterface.getAttribute(ExifInterface.TAG_EXPOSURE_TIME);
+            String aperture = exifInterface.getAttribute(ExifInterface.TAG_APERTURE);
+            String isoSpeedRatings = exifInterface.getAttribute(ExifInterface.TAG_ISO);
+            String dateTimeDigitized = exifInterface.getAttribute(ExifInterface.TAG_DATETIME_DIGITIZED);
+            String subSecTime = exifInterface.getAttribute(ExifInterface.TAG_SUBSEC_TIME);
+            String subSecTimeOrig = exifInterface.getAttribute(ExifInterface.TAG_SUBSEC_TIME_ORIG);
+            String subSecTimeDig = exifInterface.getAttribute(ExifInterface.TAG_SUBSEC_TIME_DIG);
+            String altitude = exifInterface.getAttribute(ExifInterface.TAG_GPS_ALTITUDE);
+            String altitudeRef = exifInterface.getAttribute(ExifInterface.TAG_GPS_ALTITUDE_REF);
+            String gpsTimeStamp = exifInterface.getAttribute(ExifInterface.TAG_GPS_TIMESTAMP);
+            String gpsDateStamp = exifInterface.getAttribute(ExifInterface.TAG_GPS_DATESTAMP);
+            String whiteBalance = exifInterface.getAttribute(ExifInterface.TAG_WHITE_BALANCE);
+            String focalLength = exifInterface.getAttribute(ExifInterface.TAG_FOCAL_LENGTH);
+            String processingMethod = exifInterface.getAttribute(ExifInterface.TAG_GPS_PROCESSING_METHOD);
+
+            Log.e("TAG", "## orientation=" + orientation);
+            Log.e("TAG", "## dateTime=" + dateTime);
+            Log.e("TAG", "## make=" + make);
+            Log.e("TAG", "## model=" + model);
+            Log.e("TAG", "## flash=" + flash);
+            Log.e("TAG", "## imageLength=" + imageLength);
+            Log.e("TAG", "## imageWidth=" + imageWidth);
+            Log.e("TAG", "## latitude=" + latitude);
+            Log.e("TAG", "## longitude=" + longitude);
+            Log.e("TAG", "## latitudeRef=" + latitudeRef);
+            Log.e("TAG", "## longitudeRef=" + longitudeRef);
+            Log.e("TAG", "## exposureTime=" + exposureTime);
+            Log.e("TAG", "## aperture=" + aperture);
+            Log.e("TAG", "## isoSpeedRatings=" + isoSpeedRatings);
+            Log.e("TAG", "## dateTimeDigitized=" + dateTimeDigitized);
+            Log.e("TAG", "## subSecTime=" + subSecTime);
+            Log.e("TAG", "## subSecTimeOrig=" + subSecTimeOrig);
+            Log.e("TAG", "## subSecTimeDig=" + subSecTimeDig);
+            Log.e("TAG", "## altitude=" + altitude);
+            Log.e("TAG", "## altitudeRef=" + altitudeRef);
+            Log.e("TAG", "## gpsTimeStamp=" + gpsTimeStamp);
+            Log.e("TAG", "## gpsDateStamp=" + gpsDateStamp);
+            Log.e("TAG", "## whiteBalance=" + whiteBalance);
+            Log.e("TAG", "## focalLength=" + focalLength);
+            Log.e("TAG", "## processingMethod=" + processingMethod);
+
+            float[] LatLong = new float[2];
+            boolean hasLatLong = exifInterface.getLatLong(LatLong);
+            Log.i("boolean",hasLatLong+"");
+            if (hasLatLong) {
+                System.out.println("Latitude: " + LatLong[0]);
+                System.out.println("Longitude: " + LatLong[1]);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

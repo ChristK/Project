@@ -1,15 +1,26 @@
 package com.example.project.Activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.Point;
 import android.hardware.Camera;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.GpsStatus;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.media.ExifInterface;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.project.R;
 
@@ -19,7 +30,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class CameraViewActivity extends AppCompatActivity  implements SurfaceHolder.Callback {
 
@@ -27,7 +40,6 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
     private SurfaceView surfaceView;
     private SurfaceHolder surfaceHolder;
     private ImageView picture;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +86,7 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
     private Camera.PictureCallback callback=new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            File file=new File("/sdcard/temp.png");
+            File file=new File("/sdcard/"+System.currentTimeMillis()+".jpg");
             try {
                 FileOutputStream fos=new FileOutputStream(file);
                 try {
@@ -90,6 +102,7 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
+
         }
     };
 

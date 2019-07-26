@@ -164,8 +164,6 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
         });
     }
 
-
-
     private void initControl() {
         camera=(ImageView)getActivity().findViewById(R.id.camera);
         post=(ImageView)getActivity().findViewById(R.id.post_iv);
@@ -237,6 +235,7 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
     }
 
 
+    //listview
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Post post=(Post) postcityname_adapter.getItem(position);
