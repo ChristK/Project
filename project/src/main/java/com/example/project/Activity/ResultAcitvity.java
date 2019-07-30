@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -49,8 +50,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -133,6 +136,8 @@ public class ResultAcitvity extends AppCompatActivity {
 
         Location location=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         locationUpdates(location);
+
+
 
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -332,8 +337,10 @@ public class ResultAcitvity extends AppCompatActivity {
 
         byte[] photo=os.toByteArray();
 
-
-        //package
+        //add a method to compute how much photo in this area and give different feedback to user
+        //if upper to limit, have a dialog showed to tell user this area's photo is upper to limit,please go to anther place.
+        //if not upper to limit, take photo successful
+         //package
         ContentValues values=new ContentValues();
         values.put("username",username);
         values.put("cityname",cityname);
@@ -350,7 +357,6 @@ public class ResultAcitvity extends AppCompatActivity {
         }
         database.close();
     }
-
 
     public void locationUpdates(Location location){
         if (location!=null){

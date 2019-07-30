@@ -1,8 +1,12 @@
 package com.example.project.Activity;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.ImageFormat;
 import android.graphics.Point;
 import android.hardware.Camera;
@@ -16,12 +20,14 @@ import android.media.ExifInterface;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.project.DB.DB;
 import com.example.project.R;
 
 import org.jetbrains.annotations.Nullable;
@@ -40,39 +46,114 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
     private SurfaceView surfaceView;
     private SurfaceHolder surfaceHolder;
     private ImageView picture;
+    private List<Address> addresses;
+    private TextView lat;
+    private TextView lon;
+
+    /**
+     * Table name
+     */
+    //userTable
+    public static final String DATABASE_USER_TABLE="table_user";
+
+
+    private static final String DATABASE_POST_TABLE="table_post";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cameraview);
 
-        picture=(ImageView)findViewById(R.id.take_iv);
-        surfaceView=(SurfaceView)findViewById(R.id.camera_view);
+        init();
         surfaceHolder=surfaceView.getHolder();
         surfaceHolder.addCallback(this);
 
         getCamera();
 
+        LocationManager locationManager=(LocationManager)getSystemService(LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(CameraViewActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(CameraViewActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,//provider
+                1000,//update time
+                1,//update distance
+                new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+                        locationUpdates(location);
+                    }
+
+                    @Override
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                    }
+
+                    @Override
+                    public void onProviderEnabled(String provider) {
+
+                    }
+
+                    @Override
+                    public void onProviderDisabled(String provider) {
+
+                    }
+                });
+
+        Location location=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        locationUpdates(location);
+
+        final double currentlat=Double.parseDouble(lat.getText().toString().trim());
+        final double currentlon=Double.parseDouble(lon.getText().toString().trim());
+
+
+        final int count=inCircle(currentlat,currentlon);
+
         picture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Camera.Parameters parameters = camera.getParameters();
-                parameters.setPictureFormat(ImageFormat.JPEG);
-                Point bestPreviewSizeValue1 = findBestPreviewSizeValue(parameters.getSupportedPreviewSizes());
-                parameters.setPreviewSize(bestPreviewSizeValue1.x, bestPreviewSizeValue1.y);
-                parameters.set("jpeg-quality",80);
-                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-                camera.autoFocus(new Camera.AutoFocusCallback(){
 
-                    @Override
-                    public void onAutoFocus(boolean success, Camera camera) {
-                        if (success){
-                            camera.takePicture(null,null,callback);
+                if (count>5){
+                    final AlertDialog.Builder dialog = new AlertDialog.Builder(CameraViewActivity.this);
+                    dialog.setIcon(R.drawable.warning);
+                    dialog.setTitle("Warning");
+                    dialog.setMessage("Sorry!This area photo is upper to limit");
+                    dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            CameraViewActivity.this.finish();
                         }
-                    }
-                });
+                    });
+                    dialog.show();
+                }
+                else {
+                    Camera.Parameters parameters = camera.getParameters();
+                    parameters.setPictureFormat(ImageFormat.JPEG);
+                    Point bestPreviewSizeValue1 = findBestPreviewSizeValue(parameters.getSupportedPreviewSizes());
+                    parameters.setPreviewSize(bestPreviewSizeValue1.x, bestPreviewSizeValue1.y);
+                    parameters.set("jpeg-quality", 80);
+                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+                    camera.autoFocus(new Camera.AutoFocusCallback() {
+                        @Override
+                        public void onAutoFocus(boolean success, Camera camera) {
+                            if (success) {
+                                camera.takePicture(null, null, callback);
+                            }
+                        }
+                    });
+                }
             }
         });
+
         //自动对焦
         surfaceView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,6 +161,35 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
                 camera.autoFocus(null);
             }
         });
+    }
+
+    private void init() {
+        picture=(ImageView)findViewById(R.id.take_iv);
+        surfaceView=(SurfaceView)findViewById(R.id.camera_view);
+        lat=(TextView)findViewById(R.id.lat);
+        lon=(TextView)findViewById(R.id.lon);
+    }
+
+
+    public int inCircle(double currentLat,double currentLon){
+        int count=0;
+        DB db=new DB(CameraViewActivity.this);
+        SQLiteDatabase database=db.getReadableDatabase();
+        Cursor cursor = database.query(DATABASE_POST_TABLE, new String[]{"latitude","longitude"}, null, null, null, null, null);
+        if (cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0) {
+            do {
+                double lat = cursor.getDouble(cursor.getColumnIndex("latitude"));
+                double lon = cursor.getDouble(cursor.getColumnIndex("longitude"));
+
+                float[] results = new float[1];
+                Location.distanceBetween(currentLat, currentLon, lat, lon, results);
+                float distanceInMeters = results[0];
+                if (distanceInMeters < 1000) {
+                    count++;
+                }
+            }while (cursor.moveToNext());
+        }
+        return count;
     }
 
 
@@ -105,6 +215,34 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
 
         }
     };
+
+
+    public void locationUpdates(Location location){
+        if (location!=null){
+            StringBuilder latitude=new StringBuilder();
+            latitude.append(location.getLatitude());
+            lat.setText(latitude);
+            lat.setVisibility(View.GONE);
+
+            StringBuilder longitude=new StringBuilder();
+            longitude.append(location.getLongitude());
+            lon.setText(longitude);
+            lon.setVisibility(View.GONE);
+
+            {
+                double lat=location.getLatitude();
+                double lon=location.getLongitude();
+
+                Geocoder geocoder = new Geocoder(CameraViewActivity.this, Locale.getDefault());
+                try {
+                    addresses = geocoder.getFromLocation(lat,lon,1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+}
+
 
     @Nullable
     private static Point findBestPreviewSizeValue(List<Camera.Size> sizeList){

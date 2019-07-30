@@ -18,12 +18,14 @@ import com.example.project.R;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class PhotoItem_adapter extends BaseAdapter {
 
     private List<String > paths;
     private Context context;
+    private HashMap<String ,Object> hashMap;
 
     /**
      * Table name
@@ -55,6 +57,8 @@ public class PhotoItem_adapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
+
        viewHolder viewHolder = null;
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.adapter_imageview_allphoto, null);

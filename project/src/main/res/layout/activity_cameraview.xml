@@ -7,7 +7,15 @@
     android:background="#FFFFFF"
     tools:context=".Activity.CameraViewActivity">
 
-    <SurfaceView
+    <TextView
+        android:id="@+id/lat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <TextView
+        android:id="@+id/lon"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+     <SurfaceView
         android:id="@+id/camera_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
