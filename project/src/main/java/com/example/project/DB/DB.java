@@ -37,6 +37,7 @@ public class DB extends SQLiteOpenHelper {
             "_id integer primary key autoincrement," +
             "username text,"+
             "photos blob,"+
+            "digest text,"+
             "comment text,"+
             "type text," +
             "latitude real,"+
@@ -51,7 +52,7 @@ public class DB extends SQLiteOpenHelper {
     //name:数据库名称
     //factory:游标工厂
     //version:数据库版本号，并且版本号大于0
-    public static final int VERSION=3;
+    public static final int VERSION=6;
 
 
     public DB(Context context) {

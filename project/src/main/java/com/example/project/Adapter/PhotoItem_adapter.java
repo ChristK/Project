@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +13,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import com.example.project.DB.DB;
 import com.example.project.R;
+import com.example.project.Util.MD5Util;
 
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class PhotoItem_adapter extends BaseAdapter {
@@ -59,7 +58,7 @@ public class PhotoItem_adapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
 
-       viewHolder viewHolder = null;
+        viewHolder viewHolder = null;
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.adapter_imageview_allphoto, null);
             //find control
@@ -72,42 +71,45 @@ public class PhotoItem_adapter extends BaseAdapter {
 
         if(parent.getChildCount()==position)
         {
+            HashSet<String > hashSet=new HashSet<String>();
             //里面就是正常的position
             String path = paths.get(position);
             Bitmap bitmap=BitmapFactory.decodeFile(path);
-
-            final ByteArrayOutputStream os = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
-            byte[] photo_system=os.toByteArray();
-
-            //Log.i("Count",parent.getChildCount()+"");
             viewHolder.photo_item.setImageBitmap(bitmap);
+
+            String result= null;
+            try {
+                result = MD5Util.md5HashCode(path);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            hashSet.add(result);
+
+            Log.i("Result",result);
+
+            Log.i("Path",path);
+            //iterator all path to digest and compare with hash set
 
             DB db=new DB(context);
             SQLiteDatabase database=db.getReadableDatabase();
-            Cursor cursor=database.query(DATABASE_POST_TABLE,new String[]{"photos"},null,null,null,null,null);
+            Cursor cursor=database.query(DATABASE_POST_TABLE,new String[]{"digest"},null,null,null,null,null);
+            Log.i("cursor",cursor.getCount()+"");
             if(cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0){
                 do {
-                    byte[] photo = cursor.getBlob(cursor.getColumnIndex("photos"));
+                   String digest = cursor.getString(cursor.getColumnIndex("digest"));
 
-                    if (Arrays.equals(photo,photo_system)){
-                        paths.remove(paths.get(position));
-                       // Log.i("Warning","Exist");
-
+                    Log.i("digest",digest);
+                    Log.i("Contain",hashSet.contains(digest)+"");
+                    if (hashSet.contains(digest)==true){
+                        paths.remove(path);
+                        Log.i("Contain",hashSet.contains(digest)+"");
                     }else {
                         viewHolder.photo_item.setImageBitmap(bitmap);
+                        Log.i("Contian","true");
                     }
                 }while (cursor.moveToNext());
-
-                }
-
-            //Log.i("Path",path);
-           // Log.i("position",position+"");
-        }
-        else
-        {
-            //临时的position=0
-            //Log.i("Error","position=0");
+            }
+            database.close();
         }
 
         return convertView;

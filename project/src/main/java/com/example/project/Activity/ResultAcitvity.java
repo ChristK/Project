@@ -42,6 +42,7 @@ import android.widget.Toast;
 import com.example.project.Adapter.PopItem_adapter;
 import com.example.project.DB.DB;
 import com.example.project.R;
+import com.example.project.Util.MD5Util;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
@@ -50,7 +51,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -321,6 +325,10 @@ public class ResultAcitvity extends AppCompatActivity {
 
         //photo
         String path = getIntent().getStringExtra("picPath");
+
+        Log.i("Paht_insert",path);
+        String result=MD5Util.md5HashCode(path);
+
         try {
             FileInputStream fis = new FileInputStream(path);
             bitmap = BitmapFactory.decodeStream(fis);
@@ -332,6 +340,9 @@ public class ResultAcitvity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        setExif(path,longitude,latitude);
+        Log.i("Exif",path+"\n"+longitude+"\n"+latitude);
+
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
 
@@ -340,6 +351,7 @@ public class ResultAcitvity extends AppCompatActivity {
         //add a method to compute how much photo in this area and give different feedback to user
         //if upper to limit, have a dialog showed to tell user this area's photo is upper to limit,please go to anther place.
         //if not upper to limit, take photo successful
+
          //package
         ContentValues values=new ContentValues();
         values.put("username",username);
@@ -349,6 +361,7 @@ public class ResultAcitvity extends AppCompatActivity {
         values.put("time",time_value);
         values.put("photos",photo);
         values.put("type",type);
+        values.put("digest",result);
 
         long rowId = database.insert(DATABASE_POST_TABLE, null, values);
         if (rowId!=-1){
@@ -356,6 +369,17 @@ public class ResultAcitvity extends AppCompatActivity {
             finish();
         }
         database.close();
+    }
+
+    public static void setExif(String filepath,String longitude,String latitude) throws IOException {
+        ExifInterface exif =new ExifInterface(filepath);
+        exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, longitude);    //把经度写进exif
+        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, latitude);     //把纬度写进exif
+        try {
+            exif.saveAttributes();         //最后保存起来
+        } catch (IOException e) {
+            Log.e("Mine", "cannot save exif", e);
+        }
     }
 
     public void locationUpdates(Location location){

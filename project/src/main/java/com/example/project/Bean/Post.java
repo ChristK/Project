@@ -10,7 +10,15 @@ public class Post {
     private double longitude;
     private String cityname;
     private String date;
+    private String digest;
 
+    public String getDigest() {
+        return digest;
+    }
+
+    public void setDigest(String digest) {
+        this.digest = digest;
+    }
 
     public Post(String type,byte[] photo){
         super();

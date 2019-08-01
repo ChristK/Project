@@ -121,7 +121,7 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
             @Override
             public void onClick(View v) {
 
-                if (count>5){
+                if (count>15){
                     final AlertDialog.Builder dialog = new AlertDialog.Builder(CameraViewActivity.this);
                     dialog.setIcon(R.drawable.warning);
                     dialog.setTitle("Warning");
@@ -140,7 +140,7 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
                     parameters.setPictureFormat(ImageFormat.JPEG);
                     Point bestPreviewSizeValue1 = findBestPreviewSizeValue(parameters.getSupportedPreviewSizes());
                     parameters.setPreviewSize(bestPreviewSizeValue1.x, bestPreviewSizeValue1.y);
-                    parameters.set("jpeg-quality", 80);
+                    parameters.set("jpeg-quality", 10);
                     parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
                     camera.autoFocus(new Camera.AutoFocusCallback() {
                         @Override
@@ -196,7 +196,7 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
     private Camera.PictureCallback callback=new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            File file=new File("/sdcard/"+System.currentTimeMillis()+".jpg");
+            File file=new File("/storage/emulated/0/"+System.currentTimeMillis()+".jpg");
             try {
                 FileOutputStream fos=new FileOutputStream(file);
                 try {

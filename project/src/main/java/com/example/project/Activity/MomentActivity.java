@@ -43,9 +43,11 @@ import com.example.project.Adapter.PopItem_adapter;
 import com.example.project.Bean.Post;
 import com.example.project.DB.DB;
 import com.example.project.R;
+import com.example.project.Util.MD5Util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,14 +58,12 @@ import java.util.Locale;
 public class MomentActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener {
 
     private EditText post_value;
-    private ImageView photos;
     private ImageView photo;
     private TextView cityName;
     private TextView lat;
     private TextView lon;
     private TextView time;
-    private String type;
-    private byte[] photo_bit;
+    private TextView digest;
     private List<Address> addresses;
     private GridView gridView;
     private PhotoItem_adapter adapter;
@@ -136,16 +136,6 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         locationUpdates(location);
 
-        //choose photo from photo albumn
-        photos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK, null);
-                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                startActivityForResult(intent, 100);
-            }
-        });
-
 
         getAllPaths();
 
@@ -188,12 +178,12 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
 
     private void init() {
         post_value = (EditText) findViewById(R.id.post_et);
-        photos = (ImageView) findViewById(R.id.photos);
         photo = (ImageView) findViewById(R.id.photo);
         lat = (TextView) findViewById(R.id.lat);
         lon = (TextView) findViewById(R.id.longi);
         cityName = (TextView) findViewById(R.id.cityname);
         time = (TextView) findViewById(R.id.time);
+        digest=(TextView)findViewById(R.id.digest);
         gridView = (GridView) findViewById(R.id.allPhoto);
         spinner_type = (Spinner) findViewById(R.id.type);
         type_value = (TextView) findViewById(R.id.type_value);
@@ -226,10 +216,14 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.submit:
-                if (TextUtils.isEmpty(post_value.getText()) || photo.getDrawable() == null) {
+                if (photo.getDrawable() == null) {
                     Toast.makeText(MomentActivity.this, "No comment or picture!", Toast.LENGTH_SHORT).show();
                 } else {
-                    insertData();
+                    try {
+                        insertData();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
             default:
@@ -238,7 +232,7 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         return true;
     }
 
-    private void insertData() {
+    private void insertData() throws FileNotFoundException {
 
         DB DB = new DB(MomentActivity.this);
         SQLiteDatabase database = DB.getReadableDatabase();
@@ -266,6 +260,8 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
         byte[] photo=os.toByteArray();
 
+        String result= MD5Util.md5HashCode(digest.getText().toString().trim());
+
 
         //package
         ContentValues values = new ContentValues();
@@ -277,6 +273,7 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         values.put("time", time_value);
         values.put("type", type);
         values.put("photos", photo);
+        values.put("digest",result);
 
         long rowId = database.insert(DATABASE_POST_TABLE, null, values);
         if (rowId != -1) {
@@ -378,7 +375,10 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         String path = paths.get(position).toString();
         Bitmap bitmap=BitmapFactory.decodeFile(path);
         photo.setImageBitmap(bitmap);
-        Log.i("test",path);
+        digest.setText(path);
+        digest.setVisibility(View.GONE);
+
+        Log.i("test",digest.getText().toString().trim());
         getInfor(path);
         getLocation(path);
     }
