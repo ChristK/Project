@@ -85,11 +85,12 @@ public class ResultAcitvity extends AppCompatActivity {
     /**
      * Table name
      */
-    //userTable
     public static final String DATABASE_USER_TABLE="table_user";
 
 
     private static final String DATABASE_POST_TABLE="table_post";
+
+    private static final String DATABASE_TYPE_TABLE="table_type";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +98,10 @@ public class ResultAcitvity extends AppCompatActivity {
         setContentView(R.layout.activity_result);
         mContext=ResultAcitvity.this;
         init();
-        initList();
+        //getUsername
+        SharedPreferences sp = getSharedPreferences("save", MODE_PRIVATE);
+        String username = sp.getString("name", null);
+        initList(username);
         getPic();
 
 
@@ -227,6 +231,10 @@ public class ResultAcitvity extends AppCompatActivity {
 
     private void buildEditDialog() {
         final EditText text = new EditText(mContext);
+        //getUsername
+        SharedPreferences sp = getSharedPreferences("save", MODE_PRIVATE);
+        final String username = sp.getString("name", null);
+
         new AlertDialog.Builder(mContext).setTitle("Add Type")
                 .setView(text)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -240,23 +248,21 @@ public class ResultAcitvity extends AppCompatActivity {
                         }else if (size==0 || size >10){
                             Toast.makeText(mContext,"Input error",Toast.LENGTH_SHORT).show();
                         }else {
-                            addType(type);
+                            addType(type,username);
                             try {
                                 insertData(type);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-
-                            Toast.makeText(mContext,"Add type "+type+" successful!\nPost Successful!",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext,"Successful!\nPost Successful!",Toast.LENGTH_SHORT).show();
                         }
-
                     }
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
-    private void initList(){
+    private void initList(String username){
         list.add("Add");
         list.add("Chinese food");
         list.add("Korean food");
@@ -266,9 +272,29 @@ public class ResultAcitvity extends AppCompatActivity {
         list.add("Aftenoon tea");
         list.add("Ice cream");
         list.add("Retailer");
+        DB db=new DB(ResultAcitvity.this);
+        SQLiteDatabase database=db.getReadableDatabase();
+        Cursor cursor=database.query(DATABASE_TYPE_TABLE,new String[]{"type"},"username=?",new String[]{username},null,null,null);
+        Log.i("Cursor",cursor.getCount()+"");
+        if(cursor.moveToNext()){
+                String type = cursor.getString(cursor.getColumnIndex("Type"));
+                Log.i("Type",type);
+                list.add(type);
+        }
+        database.close();
     }
-    private void addType(String type){
-        list.add(type);
+    private void addType(String type,String username){
+        ContentValues values = new ContentValues();
+        values.put("Username", username);
+        values.put("Type", type);
+
+        DB db=new DB(ResultAcitvity.this);
+        SQLiteDatabase database=db.getReadableDatabase();
+        long rowId=database.insert(DATABASE_TYPE_TABLE,null,values);
+        if (rowId != -1) {
+            Toast.makeText(ResultAcitvity.this, "Add type Successful", Toast.LENGTH_SHORT).show();
+        }
+        database.close();
     }
 
     private void getPic(){

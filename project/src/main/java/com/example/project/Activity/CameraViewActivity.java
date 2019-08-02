@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.location.Address;
@@ -32,6 +35,7 @@ import com.example.project.R;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -140,7 +144,7 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
                     parameters.setPictureFormat(ImageFormat.JPEG);
                     Point bestPreviewSizeValue1 = findBestPreviewSizeValue(parameters.getSupportedPreviewSizes());
                     parameters.setPreviewSize(bestPreviewSizeValue1.x, bestPreviewSizeValue1.y);
-                    parameters.set("jpeg-quality", 10);
+                    parameters.set("jpeg-quality", 90);
                     parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
                     camera.autoFocus(new Camera.AutoFocusCallback() {
                         @Override
@@ -215,6 +219,14 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
 
         }
     };
+
+    public Bitmap rotaingImageView(int angle , Bitmap bitmap) {
+//旋转图片 动作
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+// 创建新的图片
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
 
 
     public void locationUpdates(Location location){

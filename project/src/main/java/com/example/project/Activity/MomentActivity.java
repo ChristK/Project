@@ -11,7 +11,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -25,7 +24,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,7 +38,6 @@ import android.widget.Toast;
 
 import com.example.project.Adapter.PhotoItem_adapter;
 import com.example.project.Adapter.PopItem_adapter;
-import com.example.project.Bean.Post;
 import com.example.project.DB.DB;
 import com.example.project.R;
 import com.example.project.Util.MD5Util;
@@ -87,6 +84,7 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_moment);
+
 
         mContext = MomentActivity.this;
 

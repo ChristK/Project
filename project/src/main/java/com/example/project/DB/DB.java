@@ -21,6 +21,8 @@ public class DB extends SQLiteOpenHelper {
 
     private static final String DATABASE_POST_TABLE="table_post";
 
+    private static final String DATABASE_TYPE_TABLE="table_type";
+
 
     //userTable sql
     String userSql="create table "+DATABASE_USER_TABLE+"(" +
@@ -48,11 +50,20 @@ public class DB extends SQLiteOpenHelper {
     String dropPost="drop table if exists "+DATABASE_POST_TABLE;
 
 
+    //typeTable sql
+    String typeSql="create table "+DATABASE_TYPE_TABLE+"(" +
+            "id integer primary key autoincrement," +
+            "Username text," +
+            "Type text)";
+
+    String dropType="drop table if exists "+DATABASE_TYPE_TABLE;
+
+
     //context:上下文
     //name:数据库名称
     //factory:游标工厂
     //version:数据库版本号，并且版本号大于0
-    public static final int VERSION=6;
+    public static final int VERSION=7;
 
 
     public DB(Context context) {
@@ -65,6 +76,8 @@ public class DB extends SQLiteOpenHelper {
         db.execSQL(userSql);
 
         db.execSQL(postSql);
+
+        db.execSQL(typeSql);
 
     }
 
@@ -80,6 +93,9 @@ public class DB extends SQLiteOpenHelper {
 
             db.execSQL(dropPost);
             db.execSQL(postSql);
+
+            db.execSQL(dropType);
+            db.execSQL(typeSql);
         }
     }
 
