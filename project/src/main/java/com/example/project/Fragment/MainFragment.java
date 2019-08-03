@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -59,8 +60,10 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
     private List<Post> posts;
     private int id;
     private String username,time,comment,type;
+    private double lat,lon;
     private byte[] photo;
     private Postcityname_adapter postcityname_adapter;
+
     /**
      * Table name
      */
@@ -177,9 +180,16 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
 
     //locationUpdates
     public void locationUpdates(Location location){
+
+        SharedPreferences mySharedPreferences= getActivity().getSharedPreferences("geolocation", getActivity().MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = mySharedPreferences.edit();
         if (location!=null){
             double lat=location.getLatitude();
             double lon=location.getLongitude();
+            editor.putString("lat",String.valueOf(lat));
+            editor.putString("lon",String.valueOf(lon));
+            editor.commit();
 
             Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
             try {
@@ -214,7 +224,7 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
         DB db=new DB(getActivity());
         SQLiteDatabase database=db.getReadableDatabase();
         List<Post> listMaps = new ArrayList<Post>();
-        Cursor cursor=database.query(DATABASE_POST_TABLE,new String[]{"username","_id","time","comment","type","photos"},"cityname=?",new String[]{cityname},null,null,null);
+        Cursor cursor=database.query(DATABASE_POST_TABLE,new String[]{"username","_id","time","comment","type","photos","longitude","latitude"},"cityname=?",new String[]{cityname},null,null,null);
         if(cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0){
             do{
                 id=cursor.getInt(cursor.getColumnIndex("_id"));
@@ -223,8 +233,10 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
                 type=cursor.getString(cursor.getColumnIndex("type"));
                 comment=cursor.getString(cursor.getColumnIndex("comment"));
                 photo=cursor.getBlob(cursor.getColumnIndex("photos"));
+                lat=cursor.getDouble(cursor.getColumnIndex("latitude"));
+                lon=cursor.getDouble(cursor.getColumnIndex("longitude"));
 
-                Post post=new Post(id,username,comment,type,time,photo);
+                Post post=new Post(id,username,comment,type,time,photo,lat,lon);
                 listMaps.add(post);
 
             }while (cursor.moveToNext());

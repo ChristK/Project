@@ -24,7 +24,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -369,88 +368,41 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         String path = paths.get(position).toString();
         Bitmap bitmap=BitmapFactory.decodeFile(path);
-        photo.setImageBitmap(bitmap);
         digest.setText(path);
         digest.setVisibility(View.GONE);
-
-        Log.i("test",digest.getText().toString().trim());
         getInfor(path);
-        getLocation(path);
-    }
 
+        ExifInterface exifInterface= null;
+        try {
+            exifInterface = new ExifInterface(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        float[] LatLong = new float[2];
+        boolean hasLatLong = exifInterface.getLatLong(LatLong);
+       // Log.i("boolean",hasLatLong+"");
+        if (hasLatLong) {
+            photo.setImageBitmap(bitmap);
+        }else {
+            final android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(MomentActivity.this);
+            dialog.setIcon(R.drawable.warning);
+            dialog.setTitle("Warning");
+            dialog.setMessage("Sorry!This photo don't have location Tag!");
+            dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
+        }
+
+    }
 
     private void getInfor(String path) {
         File file = new File(path);
         String Datetime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
                         .format(new Date(file.lastModified()));
         Toast.makeText(mContext, Datetime, Toast.LENGTH_SHORT).show();
-    }
-
-    private void getLocation(String path){
-        try {
-            ExifInterface exifInterface=new ExifInterface(path);
-
-            String orientation = exifInterface.getAttribute(ExifInterface.TAG_ORIENTATION);
-            String dateTime = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
-            String make = exifInterface.getAttribute(ExifInterface.TAG_MAKE);
-            String model = exifInterface.getAttribute(ExifInterface.TAG_MODEL);
-            String flash = exifInterface.getAttribute(ExifInterface.TAG_FLASH);
-            String imageLength = exifInterface.getAttribute(ExifInterface.TAG_IMAGE_LENGTH);
-            String imageWidth = exifInterface.getAttribute(ExifInterface.TAG_IMAGE_WIDTH);
-            String latitude = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
-            String longitude = exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
-            String latitudeRef = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
-            String longitudeRef = exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF);
-            String exposureTime = exifInterface.getAttribute(ExifInterface.TAG_EXPOSURE_TIME);
-            String aperture = exifInterface.getAttribute(ExifInterface.TAG_APERTURE);
-            String isoSpeedRatings = exifInterface.getAttribute(ExifInterface.TAG_ISO);
-            String dateTimeDigitized = exifInterface.getAttribute(ExifInterface.TAG_DATETIME_DIGITIZED);
-            String subSecTime = exifInterface.getAttribute(ExifInterface.TAG_SUBSEC_TIME);
-            String subSecTimeOrig = exifInterface.getAttribute(ExifInterface.TAG_SUBSEC_TIME_ORIG);
-            String subSecTimeDig = exifInterface.getAttribute(ExifInterface.TAG_SUBSEC_TIME_DIG);
-            String altitude = exifInterface.getAttribute(ExifInterface.TAG_GPS_ALTITUDE);
-            String altitudeRef = exifInterface.getAttribute(ExifInterface.TAG_GPS_ALTITUDE_REF);
-            String gpsTimeStamp = exifInterface.getAttribute(ExifInterface.TAG_GPS_TIMESTAMP);
-            String gpsDateStamp = exifInterface.getAttribute(ExifInterface.TAG_GPS_DATESTAMP);
-            String whiteBalance = exifInterface.getAttribute(ExifInterface.TAG_WHITE_BALANCE);
-            String focalLength = exifInterface.getAttribute(ExifInterface.TAG_FOCAL_LENGTH);
-            String processingMethod = exifInterface.getAttribute(ExifInterface.TAG_GPS_PROCESSING_METHOD);
-
-            Log.e("TAG", "## orientation=" + orientation);
-            Log.e("TAG", "## dateTime=" + dateTime);
-            Log.e("TAG", "## make=" + make);
-            Log.e("TAG", "## model=" + model);
-            Log.e("TAG", "## flash=" + flash);
-            Log.e("TAG", "## imageLength=" + imageLength);
-            Log.e("TAG", "## imageWidth=" + imageWidth);
-            Log.e("TAG", "## latitude=" + latitude);
-            Log.e("TAG", "## longitude=" + longitude);
-            Log.e("TAG", "## latitudeRef=" + latitudeRef);
-            Log.e("TAG", "## longitudeRef=" + longitudeRef);
-            Log.e("TAG", "## exposureTime=" + exposureTime);
-            Log.e("TAG", "## aperture=" + aperture);
-            Log.e("TAG", "## isoSpeedRatings=" + isoSpeedRatings);
-            Log.e("TAG", "## dateTimeDigitized=" + dateTimeDigitized);
-            Log.e("TAG", "## subSecTime=" + subSecTime);
-            Log.e("TAG", "## subSecTimeOrig=" + subSecTimeOrig);
-            Log.e("TAG", "## subSecTimeDig=" + subSecTimeDig);
-            Log.e("TAG", "## altitude=" + altitude);
-            Log.e("TAG", "## altitudeRef=" + altitudeRef);
-            Log.e("TAG", "## gpsTimeStamp=" + gpsTimeStamp);
-            Log.e("TAG", "## gpsDateStamp=" + gpsDateStamp);
-            Log.e("TAG", "## whiteBalance=" + whiteBalance);
-            Log.e("TAG", "## focalLength=" + focalLength);
-            Log.e("TAG", "## processingMethod=" + processingMethod);
-
-            float[] LatLong = new float[2];
-            boolean hasLatLong = exifInterface.getLatLong(LatLong);
-            Log.i("boolean",hasLatLong+"");
-            if (hasLatLong) {
-                System.out.println("Latitude: " + LatLong[0]);
-                System.out.println("Longitude: " + LatLong[1]);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

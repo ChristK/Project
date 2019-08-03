@@ -51,7 +51,7 @@ public class Post {
         this.date=date;
     }
 
-    public Post(int id,String username,String comment,String type,String time,byte[] photo){
+    public Post(int id,String username,String comment,String type,String time,byte[] photo,double latitude,double longitude){
         super();
         this._id=id;
         this.Username=username;
@@ -59,7 +59,8 @@ public class Post {
         this.type=type;
         this.date=time;
         this.photo=photo;
-
+        this.latitude=latitude;
+        this.longitude=longitude;
 
     }
 

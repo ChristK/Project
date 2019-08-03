@@ -150,8 +150,6 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
                     camera.setParameters(parameters);
                     parameters.set("jpeg-quality", 90);
                     camera.setParameters(parameters);
-                    parameters.setRotation(90);
-                    camera.setParameters(parameters);
                     parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
                     camera.autoFocus(null);
                     camera.takePicture(null,null,callback);
@@ -219,47 +217,6 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
 
         }
     };
-
-    /**
-     * 读取照片exif信息中的旋转角度
-     * @param path 照片路径
-     * @return角度
-     */
-    public static int readPictureDegree(String path) {
-        //传入图片路径
-        int degree = 0;
-        try {
-            ExifInterface exifInterface = new ExifInterface(path);
-            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-            switch (orientation) {
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    degree = 90;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    degree = 180;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    degree = 270;
-                    break;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return degree;
-    }
-
-    //旋将旋转后的图片翻转
-    public static Bitmap toturn(String path, int degree){
-        Bitmap img = BitmapFactory.decodeFile(path);
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degree); /*翻转90度*/
-        int width = img.getWidth();
-        int height =img.getHeight();
-        img = Bitmap.createBitmap(img, 0, 0, width, height, matrix, true);
-        return img;
-    }
-
-
 
     public void locationUpdates(Location location){
         if (location!=null){
