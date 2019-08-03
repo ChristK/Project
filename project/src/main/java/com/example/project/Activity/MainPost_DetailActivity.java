@@ -102,6 +102,4 @@ public class MainPost_DetailActivity extends AppCompatActivity {
         }
         database.close();
     }
-
-
 }

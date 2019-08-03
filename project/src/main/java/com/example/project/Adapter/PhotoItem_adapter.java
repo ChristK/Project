@@ -75,6 +75,7 @@ public class PhotoItem_adapter extends BaseAdapter {
             //里面就是正常的position
             String path = paths.get(position);
             Bitmap bitmap=BitmapFactory.decodeFile(path);
+
             viewHolder.photo_item.setImageBitmap(bitmap);
 
             String result= null;

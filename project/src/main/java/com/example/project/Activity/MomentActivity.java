@@ -346,7 +346,6 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
                 .show();
     }
 
-
     //spinner
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -365,8 +364,6 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
 
     }
 
-
-
     //gridview
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -380,7 +377,6 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         getInfor(path);
         getLocation(path);
     }
-
 
 
     private void getInfor(String path) {

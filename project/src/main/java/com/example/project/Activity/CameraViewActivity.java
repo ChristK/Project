@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
+import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.location.Address;
@@ -20,6 +21,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.ExifInterface;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -141,19 +143,18 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
                 }
                 else {
                     Camera.Parameters parameters = camera.getParameters();
-                    parameters.setPictureFormat(ImageFormat.JPEG);
+                    parameters.setPictureFormat(PixelFormat.JPEG);
+                    camera.setParameters(parameters);
                     Point bestPreviewSizeValue1 = findBestPreviewSizeValue(parameters.getSupportedPreviewSizes());
                     parameters.setPreviewSize(bestPreviewSizeValue1.x, bestPreviewSizeValue1.y);
+                    camera.setParameters(parameters);
                     parameters.set("jpeg-quality", 90);
+                    camera.setParameters(parameters);
+                    parameters.setRotation(90);
+                    camera.setParameters(parameters);
                     parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-                    camera.autoFocus(new Camera.AutoFocusCallback() {
-                        @Override
-                        public void onAutoFocus(boolean success, Camera camera) {
-                            if (success) {
-                                camera.takePicture(null, null, callback);
-                            }
-                        }
-                    });
+                    camera.autoFocus(null);
+                    camera.takePicture(null,null,callback);
                 }
             }
         });
@@ -196,7 +197,6 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
         return count;
     }
 
-
     private Camera.PictureCallback callback=new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
@@ -220,13 +220,45 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
         }
     };
 
-    public Bitmap rotaingImageView(int angle , Bitmap bitmap) {
-//旋转图片 动作
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-// 创建新的图片
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    /**
+     * 读取照片exif信息中的旋转角度
+     * @param path 照片路径
+     * @return角度
+     */
+    public static int readPictureDegree(String path) {
+        //传入图片路径
+        int degree = 0;
+        try {
+            ExifInterface exifInterface = new ExifInterface(path);
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return degree;
     }
+
+    //旋将旋转后的图片翻转
+    public static Bitmap toturn(String path, int degree){
+        Bitmap img = BitmapFactory.decodeFile(path);
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree); /*翻转90度*/
+        int width = img.getWidth();
+        int height =img.getHeight();
+        img = Bitmap.createBitmap(img, 0, 0, width, height, matrix, true);
+        return img;
+    }
+
 
 
     public void locationUpdates(Location location){

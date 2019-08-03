@@ -19,7 +19,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.ExifInterface;
-import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -43,22 +42,13 @@ import com.example.project.Adapter.PopItem_adapter;
 import com.example.project.DB.DB;
 import com.example.project.R;
 import com.example.project.Util.MD5Util;
-import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -333,6 +323,47 @@ public class ResultAcitvity extends AppCompatActivity {
 
     private void insertData(String type) throws IOException {
 
+        LocationManager locationManager=(LocationManager)getSystemService(LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(ResultAcitvity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ResultAcitvity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,//provider
+                1000,//update time
+                1,//update distance
+                new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+                        locationUpdates(location);
+                    }
+
+                    @Override
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                    }
+
+                    @Override
+                    public void onProviderEnabled(String provider) {
+
+                    }
+
+                    @Override
+                    public void onProviderDisabled(String provider) {
+
+                    }
+                });
+
+        Location location=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        locationUpdates(location);
+
+
         DB DB = new DB(ResultAcitvity.this);
         SQLiteDatabase database = DB.getReadableDatabase();
 
@@ -351,8 +382,7 @@ public class ResultAcitvity extends AppCompatActivity {
 
         //photo
         String path = getIntent().getStringExtra("picPath");
-
-        Log.i("Paht_insert",path);
+        Log.i("path===  ",path);
         String result=MD5Util.md5HashCode(path);
 
         try {
@@ -366,7 +396,7 @@ public class ResultAcitvity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        setExif(path,longitude,latitude);
+        setExif(path,location);
         Log.i("Exif",path+"\n"+longitude+"\n"+latitude);
 
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -397,15 +427,32 @@ public class ResultAcitvity extends AppCompatActivity {
         database.close();
     }
 
-    public static void setExif(String filepath,String longitude,String latitude) throws IOException {
+
+
+    public  void setExif(String filepath, Location location) throws IOException {
         ExifInterface exif =new ExifInterface(filepath);
-        exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, longitude);    //把经度写进exif
-        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, latitude);     //把纬度写进exif
-        try {
-            exif.saveAttributes();         //最后保存起来
-        } catch (IOException e) {
-            Log.e("Mine", "cannot save exif", e);
-        }
+
+        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, dec2DMS(location.getLatitude()));    //把经度写进exif
+        exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, dec2DMS(location.getLongitude()));     //把纬度写进exif
+        if (location.getLatitude() > 0)
+            exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "N");
+        else
+            exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "S");
+        if (location.getLongitude()>0)
+            exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "E");
+        else
+            exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "W");
+        exif.saveAttributes();       //最后保存起来
+    }
+
+    String dec2DMS(double coord) {
+        coord = coord > 0 ? coord : -coord;  // -105.9876543 -> 105.9876543
+        String sOut = Integer.toString((int)coord) + "/1,";   // 105/1,
+        coord = (coord % 1) * 60;         // .987654321 * 60 = 59.259258
+        sOut = sOut + Integer.toString((int)coord) + "/1,";   // 105/1,59/1,
+        coord = (coord % 1) * 60000;             // .259258 * 60000 = 15555
+        sOut = sOut + Integer.toString((int)coord) + "/1000";   // 105/1,59/1,15555/1000
+        return sOut;
     }
 
     public void locationUpdates(Location location){
