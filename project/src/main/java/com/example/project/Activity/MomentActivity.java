@@ -24,6 +24,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,6 +46,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -79,6 +81,9 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
 
     private static final String DATABASE_POST_TABLE = "table_post";
 
+
+    private static final String DATABASE_TYPE_TABLE="table_type";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,12 +95,16 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         //init control
         init();
 
-        initList();
-        ;
+        SharedPreferences sp = getSharedPreferences("save", MODE_PRIVATE);
+        String username = sp.getString("name", null);
 
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        if (ActivityCompat.checkSelfPermission(MomentActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MomentActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(MomentActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                &&
+                ActivityCompat.checkSelfPermission(MomentActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -134,6 +143,8 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         locationUpdates(location);
 
 
+
+        initList(username);
         getAllPaths();
 
         //gridview adapter
@@ -162,7 +173,11 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
 
 
     private void getAllPaths() {
-        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null, null, null);
+        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
         //遍历相册
         while (cursor.moveToNext()) {
             String path = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
@@ -178,7 +193,7 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         photo = (ImageView) findViewById(R.id.photo);
         lat = (TextView) findViewById(R.id.lat);
         lon = (TextView) findViewById(R.id.longi);
-        cityName = (TextView) findViewById(R.id.cityname);
+         cityName = (TextView) findViewById(R.id.cityname);
         time = (TextView) findViewById(R.id.time);
         digest=(TextView)findViewById(R.id.digest);
         gridView = (GridView) findViewById(R.id.allPhoto);
@@ -186,7 +201,7 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         type_value = (TextView) findViewById(R.id.type_value);
     }
 
-    private void initList() {
+    private void initList(String username){
         list.add("Chinese food");
         list.add("Korean food");
         list.add("Japanese food");
@@ -194,12 +209,33 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         list.add("Fast food");
         list.add("Aftenoon tea");
         list.add("Ice cream");
-        list.add("Retalier");
+        list.add("Retailer");
         list.add("Add");
+
+        DB db=new DB(MomentActivity.this);
+        SQLiteDatabase database=db.getReadableDatabase();
+        Cursor cursor=database.query(DATABASE_TYPE_TABLE,new String[]{"type"},"username=?",new String[]{username},null,null,null);
+        Log.i("Cursor",cursor.getCount()+"");
+        if(cursor.moveToNext()){
+            String type = cursor.getString(cursor.getColumnIndex("Type"));
+            Log.i("Type",type);
+            list.add(type);
+        }
+        database.close();
     }
 
-    private void addType(String type) {
-        list.add(type);
+    private void addType(String type,String username){
+        ContentValues values = new ContentValues();
+        values.put("Username", username);
+        values.put("Type", type);
+
+        DB db=new DB(MomentActivity.this);
+        SQLiteDatabase database=db.getReadableDatabase();
+        long rowId=database.insert(DATABASE_TYPE_TABLE,null,values);
+        if (rowId != -1) {
+            Toast.makeText(MomentActivity.this, "Add type Successful", Toast.LENGTH_SHORT).show();
+        }
+        database.close();
     }
 
     //menu button
@@ -214,19 +250,76 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         switch (item.getItemId()) {
             case R.id.submit:
                 if (photo.getDrawable() == null) {
-                    Toast.makeText(MomentActivity.this, "No comment or picture!", Toast.LENGTH_SHORT).show();
-                } else {
+                    Toast.makeText(MomentActivity.this, "No picture!", Toast.LENGTH_SHORT).show();
+                } else if (getCount()>20) {
+                    final android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(MomentActivity.this);
+                    dialog.setIcon(R.drawable.warning);
+                    dialog.setTitle("Warning");
+                    dialog.setMessage("Sorry!This area photo is upper to limit");
+                    dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            MomentActivity.this.finish();
+                        }
+                    });
+                    dialog.show();
+                }else {
                     try {
                         insertData();
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
                 }
+
+
                 break;
             default:
                 break;
         }
         return true;
+    }
+
+    private int getCount(){
+
+        final double currentlat=Double.parseDouble(lat.getText().toString().trim());
+        final double currentlon=Double.parseDouble(lon.getText().toString().trim());
+
+        final int count=inCircle(currentlat,currentlon);
+
+        return count;
+    }
+
+    public int inCircle(double currentLat,double currentLon){
+        SharedPreferences mySharedPreferences= getSharedPreferences("radius", MODE_PRIVATE);
+
+        String radius=mySharedPreferences.getString("radius",null);
+        int r=Integer.parseInt(radius);
+
+        int count=0;
+        DB db=new DB(MomentActivity.this);
+        SQLiteDatabase database=db.getReadableDatabase();
+        Cursor cursor = database.query(DATABASE_POST_TABLE, new String[]{"latitude","longitude"},
+                null,
+                null,
+                null,
+                null,
+                null);
+        if (cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0) {
+            do {
+                double lat = cursor.getDouble(cursor.getColumnIndex("latitude"));
+                double lon = cursor.getDouble(cursor.getColumnIndex("longitude"));
+
+                float[] results = new float[1];
+                Location.distanceBetween(currentLat, currentLon, lat, lon, results);
+                float distanceInMeters = results[0];
+                if (distanceInMeters < r) {
+                    count++;
+                }
+            }while (cursor.moveToNext());
+        }
+        db.close();
+        return count;
     }
 
     private void insertData() throws FileNotFoundException {
@@ -242,10 +335,12 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         String latitude = lat.getText().toString().trim();
         //longitude
         String longitude = lon.getText().toString().trim();
-        //time
-        String time_value = time.getText().toString().trim();
         //type
         String type = type_value.getText().toString().trim();
+
+
+        SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String date = sDateFormat.format(new java.util.Date());
 
         //getUsername
         SharedPreferences sp = getSharedPreferences("save", MODE_PRIVATE);
@@ -258,8 +353,6 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         byte[] photo=os.toByteArray();
 
         String result= MD5Util.md5HashCode(digest.getText().toString().trim());
-
-
         //package
         ContentValues values = new ContentValues();
         values.put("username", username);
@@ -267,7 +360,7 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         values.put("cityname", cityname);
         values.put("latitude", latitude);
         values.put("longitude", longitude);
-        values.put("time", time_value);
+        values.put("time", date);
         values.put("type", type);
         values.put("photos", photo);
         values.put("digest",result);
@@ -295,10 +388,6 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
             lon.setVisibility(View.GONE);
 
 
-            SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-            String date = sDateFormat.format(new java.util.Date());
-            time.setText(date);
-            time.setVisibility(View.GONE);
 
             {
                 double lat = location.getLatitude();
@@ -322,6 +411,9 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
 
     private void buildEditDialog() {
         final EditText text = new EditText(mContext);
+        SharedPreferences sp = getSharedPreferences("save", MODE_PRIVATE);
+        final String username = sp.getString("name", null);
+
         new AlertDialog.Builder(mContext).setTitle("Add Type")
                 .setView(text)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -330,16 +422,28 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
                     public void onClick(DialogInterface dialog, int which) {
                         String type = text.getText().toString();
                         int size = type.length();
-                        if (size == 0) {
-                            Toast.makeText(mContext, "Sorry!Please enter type", Toast.LENGTH_SHORT).show();
-                        } else if (size > 10) {
-                            Toast.makeText(mContext, "Sorry!The number of words you entered is out of range", Toast.LENGTH_SHORT).show();
+                         if (size == 0) {
+                                Toast.makeText(mContext, "Sorry!Please enter type", Toast.LENGTH_SHORT).show();
+                            } else if (size > 10) {
+                                Toast.makeText(mContext, "Sorry!The number of words you entered is out of range", Toast.LENGTH_SHORT).show();
+                            } else if(list.contains(type)==true){
+                             final android.app.AlertDialog.Builder dialog1 = new android.app.AlertDialog.Builder(MomentActivity.this);
+                             dialog1.setIcon(R.drawable.warning);
+                             dialog1.setTitle("Warning");
+                             dialog1.setMessage("Sorry!This type is exist!");
+                             dialog1.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                 @Override
+                                 public void onClick(DialogInterface dialog, int which) {
+                                     dialog.dismiss();
+                                 }
+                             });
+                             dialog1.show();
                         } else {
-                            addType(type);
-                            Toast.makeText(mContext, "Successful add type:" + type, Toast.LENGTH_LONG).show();
+                                addType(username,type);
+                                Toast.makeText(mContext, "Successful add type:" + type, Toast.LENGTH_LONG).show();
+                            }
                         }
 
-                    }
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
@@ -348,10 +452,10 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
     //spinner
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (position == 8) {
+        String type_name = adapter_type.getItem(position).toString();
+        if (type_name.equals("Add")){
             buildEditDialog();
         } else {
-            String type_name = adapter_type.getItem(position).toString();
             type_value.setText(type_name);
             type_value.setVisibility(View.GONE);
             Toast.makeText(MomentActivity.this, type_name, Toast.LENGTH_SHORT).show();
@@ -370,7 +474,10 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         Bitmap bitmap=BitmapFactory.decodeFile(path);
         digest.setText(path);
         digest.setVisibility(View.GONE);
-        getInfor(path);
+        String date = getInfor(path);
+        SharedPreferences mySharedPreferences= getSharedPreferences("geolocation", MomentActivity.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = mySharedPreferences.edit();
 
         ExifInterface exifInterface= null;
         try {
@@ -378,11 +485,34 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         float[] LatLong = new float[2];
         boolean hasLatLong = exifInterface.getLatLong(LatLong);
-       // Log.i("boolean",hasLatLong+"");
+        float lat=LatLong[0];
+        BigDecimal b1 = new BigDecimal(String.valueOf(lat));
+        double mlat = b1.doubleValue();
+
+        float lon=LatLong[1];
+        BigDecimal b2 = new BigDecimal(String.valueOf(lon));
+        double mlon = b2.doubleValue();
+
+        int count=inCircle(mlat,mlon);
+        Log.i("Value:","Latitude:"+mlat+"\nLongitude:"+mlon+"\nTime:"+date);
+        // Log.i("boolean",hasLatLong+"");
         if (hasLatLong) {
             photo.setImageBitmap(bitmap);
+        }else if (count>20) {
+            final android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(MomentActivity.this);
+            dialog.setIcon(R.drawable.warning);
+            dialog.setTitle("Warning");
+            dialog.setMessage("Sorry!This area photo is upper to limit");
+            dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
         }else {
             final android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(MomentActivity.this);
             dialog.setIcon(R.drawable.warning);
@@ -396,13 +526,14 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
             });
             dialog.show();
         }
-
     }
 
-    private void getInfor(String path) {
+    private String getInfor(String path) {
         File file = new File(path);
         String Datetime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
                         .format(new Date(file.lastModified()));
         Toast.makeText(mContext, Datetime, Toast.LENGTH_SHORT).show();
+        return Datetime;
     }
+
 }

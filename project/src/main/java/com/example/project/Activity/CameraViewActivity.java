@@ -127,7 +127,7 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
             @Override
             public void onClick(View v) {
 
-                if (count>15){
+                if (count>20){
                     final AlertDialog.Builder dialog = new AlertDialog.Builder(CameraViewActivity.this);
                     dialog.setIcon(R.drawable.warning);
                     dialog.setTitle("Warning");
@@ -149,6 +149,8 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
                     parameters.setPreviewSize(bestPreviewSizeValue1.x, bestPreviewSizeValue1.y);
                     camera.setParameters(parameters);
                     parameters.set("jpeg-quality", 90);
+                    camera.setParameters(parameters);
+                    parameters.setRotation(90);
                     camera.setParameters(parameters);
                     parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
                     camera.autoFocus(null);
@@ -178,7 +180,12 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
         int count=0;
         DB db=new DB(CameraViewActivity.this);
         SQLiteDatabase database=db.getReadableDatabase();
-        Cursor cursor = database.query(DATABASE_POST_TABLE, new String[]{"latitude","longitude"}, null, null, null, null, null);
+        Cursor cursor = database.query(DATABASE_POST_TABLE, new String[]{"latitude","longitude"},
+                null,
+                null,
+                null,
+                null,
+                null);
         if (cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0) {
             do {
                 double lat = cursor.getDouble(cursor.getColumnIndex("latitude"));

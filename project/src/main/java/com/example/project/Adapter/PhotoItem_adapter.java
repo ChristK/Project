@@ -16,7 +16,7 @@ import com.example.project.R;
 import com.example.project.Util.MD5Util;
 
 import java.io.FileNotFoundException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -24,7 +24,6 @@ public class PhotoItem_adapter extends BaseAdapter {
 
     private List<String > paths;
     private Context context;
-    private HashMap<String ,Object> hashMap;
 
     /**
      * Table name
@@ -69,15 +68,14 @@ public class PhotoItem_adapter extends BaseAdapter {
             viewHolder = (viewHolder) convertView.getTag();
         }
 
-        if(parent.getChildCount()==position)
-        {
-            HashSet<String > hashSet=new HashSet<String>();
+        if(parent.getChildCount()==position) {
             //里面就是正常的position
             String path = paths.get(position);
             Bitmap bitmap=BitmapFactory.decodeFile(path);
 
-            viewHolder.photo_item.setImageBitmap(bitmap);
+            //viewHolder.photo_item.setImageBitmap(bitmap);
 
+            HashSet<String > hashSet=new HashSet<String>();
             String result= null;
             try {
                 result = MD5Util.md5HashCode(path);
@@ -86,29 +84,34 @@ public class PhotoItem_adapter extends BaseAdapter {
             }
             hashSet.add(result);
 
-            Log.i("Result",result);
-
-            Log.i("Path",path);
+           // Log.i("Result",result);
+            //Log.i("Path",path);
             //iterator all path to digest and compare with hash set
 
             DB db=new DB(context);
             SQLiteDatabase database=db.getReadableDatabase();
-            Cursor cursor=database.query(DATABASE_POST_TABLE,new String[]{"digest"},null,null,null,null,null);
-            Log.i("cursor",cursor.getCount()+"");
+            Cursor cursor=database.query(DATABASE_POST_TABLE,new String[]{"digest"},
+                    null,
+                    null,
+                    null,
+                    null,
+                    null);
+            //Log.i("cursor",cursor.getCount()+"");
             if(cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0){
                 do {
                    String digest = cursor.getString(cursor.getColumnIndex("digest"));
-
-                    Log.i("digest",digest);
-                    Log.i("Contain",hashSet.contains(digest)+"");
+                    //Log.i("digest",digest);
+                    //Log.i("Contain",hashSet.contains(digest)+"");
                     if (hashSet.contains(digest)==true){
                         paths.remove(path);
-                        Log.i("Contain",hashSet.contains(digest)+"");
+                        //paths.add("");
+                        //Log.i("Contain",hashSet.contains(digest)+"");
                     }else {
                         viewHolder.photo_item.setImageBitmap(bitmap);
-                        Log.i("Contian","true");
+                        //Log.i("Contian","true");
                     }
                 }while (cursor.moveToNext());
+
             }
             database.close();
         }

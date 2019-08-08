@@ -92,7 +92,7 @@ public class Postcityname_adapter extends BaseAdapter {
         double endLat=posts.get(position).getLatitude();
         double endLon=posts.get(position).getLongitude();
         float distance=distanceBetween(startLat,startLon,endLat,endLon);
-        viewHolder.distance.setText("Distance:"+distance);
+        viewHolder.distance.setText("Distance:"+distance+"m");
 
         //Log.i("Distance",position+"--------->"+startLat+"\n"+startLon+"\n"+endLat+"\n"+endLon+"\n"+distance);
         //Log.i("value",String.valueOf(posts.get(position).getScore()));

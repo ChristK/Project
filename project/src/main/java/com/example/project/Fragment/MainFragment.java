@@ -53,11 +53,8 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
     private ImageView post;
     private TextView warning;
     private ListView listView;
-    private EditText et_search;
-    private Button btn_search;
     private TextView cityName;
     private List<Address> addresses;
-    private List<Post> posts;
     private int id;
     private String username,time,comment,type;
     private double lat,lon;
@@ -170,8 +167,6 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
     private void initControl() {
         camera=(ImageView)getActivity().findViewById(R.id.camera);
         post=(ImageView)getActivity().findViewById(R.id.post_iv);
-        et_search=(EditText) getActivity().findViewById(R.id.et_search);
-        btn_search=(Button) getActivity().findViewById(R.id.btn_search);
         cityName=(TextView)getActivity().findViewById(R.id.cityname);
         listView=(ListView)getActivity().findViewById(R.id.list_item);
         warning=(TextView)getActivity().findViewById(R.id.warning);
@@ -201,18 +196,6 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
             if(addresses!=null||addresses.size()>0) {
                 String locality = addresses.get(0).getLocality();
                 cityName.setText(locality);
-
-                final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-                dialog.setIcon(R.drawable.map);
-                dialog.setTitle("Location");
-                dialog.setMessage("According to your GPS, you are in "+locality);
-                dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show();
             }
         }
         else {
@@ -224,7 +207,7 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
         DB db=new DB(getActivity());
         SQLiteDatabase database=db.getReadableDatabase();
         List<Post> listMaps = new ArrayList<Post>();
-        Cursor cursor=database.query(DATABASE_POST_TABLE,new String[]{"username","_id","time","comment","type","photos","longitude","latitude"},"cityname=?",new String[]{cityname},null,null,null);
+        Cursor cursor=database.query(DATABASE_POST_TABLE,new String[]{"username","_id","time","comment","type","photos","longitude","latitude"},"cityname=?",new String[]{cityname},null,null,"time DESC","10");
         if(cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0){
             do{
                 id=cursor.getInt(cursor.getColumnIndex("_id"));

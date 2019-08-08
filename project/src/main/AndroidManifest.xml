@@ -69,6 +69,7 @@
             android:label="Login" />
         <activity
             android:name=".Activity.MainActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
             android:label="Main" />
     </application>
 

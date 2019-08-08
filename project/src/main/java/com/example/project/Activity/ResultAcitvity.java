@@ -234,7 +234,17 @@ public class ResultAcitvity extends AppCompatActivity {
                         String type = text.getText().toString();
                         int size = type.length();
                         if (list.contains(type)==true){
-                            Toast.makeText(mContext,"This type is exist",Toast.LENGTH_SHORT).show();
+                            final android.app.AlertDialog.Builder dialog1 = new android.app.AlertDialog.Builder(ResultAcitvity.this);
+                            dialog1.setIcon(R.drawable.warning);
+                            dialog1.setTitle("Warning");
+                            dialog1.setMessage("Sorry!This type is exist!");
+                            dialog1.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            dialog1.show();
                         }else if (size==0 || size >10){
                             Toast.makeText(mContext,"Input error",Toast.LENGTH_SHORT).show();
                         }else {
@@ -273,6 +283,7 @@ public class ResultAcitvity extends AppCompatActivity {
         }
         database.close();
     }
+
     private void addType(String type,String username){
         ContentValues values = new ContentValues();
         values.put("Username", username);
