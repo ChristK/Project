@@ -71,13 +71,7 @@ public class LoginActivity extends AppCompatActivity {
         String password_input=password.getText().toString().trim();
         SharedPerencesUtil sp= SharedPerencesUtil.getInstance(getApplicationContext());
 
-        Cursor cursor=database.query(DATABASE_USER_TABLE,
-                new String[]{"username","password"},
-                "username=? and Password=?",
-                new String[]{username_input,password_input},
-                null,
-                null,
-                null);
+        Cursor cursor=database.query(DATABASE_USER_TABLE, new String[]{"username","password"}, "username=? and Password=?", new String[]{username_input,password_input}, null, null, null);
 
         if(cursor.getCount()!=0)
         {

@@ -91,7 +91,7 @@ public class ResultAcitvity extends AppCompatActivity {
         //getUsername
         SharedPreferences sp = getSharedPreferences("save", MODE_PRIVATE);
         String username = sp.getString("name", null);
-        initList(username);
+        initList();
         getPic();
 
 
@@ -204,7 +204,7 @@ public class ResultAcitvity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (id==0){
+                if (list.get(position).equals("Add")){
                     buildEditDialog();
                 }
                 else {
@@ -215,6 +215,45 @@ public class ResultAcitvity extends AppCompatActivity {
                     }
                     Toast.makeText(ResultAcitvity.this,"Successful post! \nThe type is : "+list.get(position),Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                if (list.get(position).equals("Add")){
+                    Toast.makeText(mContext,"Cannot remove Add",Toast.LENGTH_SHORT).show();
+                    //Log.i("Warning","Cannot remove this ");
+                }else {
+
+
+                final android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(ResultAcitvity.this);
+                dialog.setIcon(R.drawable.warning);
+                dialog.setTitle("Warning");
+                dialog.setMessage("Are you sure to remove "+list.get(position));
+                dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        DB db=new DB(ResultAcitvity.this);
+                        SQLiteDatabase database=db.getReadableDatabase();
+                        String type=list.get(position).toString();
+                        list.remove(type);
+                                //Log.i("type",type);
+                        database.delete(DATABASE_TYPE_TABLE,"Type=?", new String[]{type});
+                        dialog.dismiss();
+
+                    }
+                });
+
+                dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
+                }
+                return true;
             }
         });
     }
@@ -245,10 +284,10 @@ public class ResultAcitvity extends AppCompatActivity {
                                 }
                             });
                             dialog1.show();
-                        }else if (size==0 || size >10){
+                        }else if (size==0 || size >20){
                             Toast.makeText(mContext,"Input error",Toast.LENGTH_SHORT).show();
                         }else {
-                            addType(type,username);
+                            addType(type);
                             try {
                                 insertData(type);
                             } catch (IOException e) {
@@ -262,31 +301,24 @@ public class ResultAcitvity extends AppCompatActivity {
                 .show();
     }
 
-    private void initList(String username){
+    private void initList(){
         list.add("Add");
-        list.add("Chinese food");
-        list.add("Korean food");
-        list.add("Japanese food");
-        list.add("Tuekey food");
-        list.add("Fast food");
-        list.add("Aftenoon tea");
-        list.add("Ice cream");
-        list.add("Retailer");
         DB db=new DB(ResultAcitvity.this);
         SQLiteDatabase database=db.getReadableDatabase();
-        Cursor cursor=database.query(DATABASE_TYPE_TABLE,new String[]{"type"},"username=?",new String[]{username},null,null,null);
+        Cursor cursor=database.query(DATABASE_TYPE_TABLE,new String[]{"type"},null,null,null,null,null);
         Log.i("Cursor",cursor.getCount()+"");
-        if(cursor.moveToNext()){
+        if(cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0){
+            do {
                 String type = cursor.getString(cursor.getColumnIndex("Type"));
                 Log.i("Type",type);
                 list.add(type);
+            }while (cursor.moveToNext());
         }
         database.close();
     }
 
-    private void addType(String type,String username){
+    private void addType(String type){
         ContentValues values = new ContentValues();
-        values.put("Username", username);
         values.put("Type", type);
 
         DB db=new DB(ResultAcitvity.this);
@@ -393,7 +425,7 @@ public class ResultAcitvity extends AppCompatActivity {
 
         //photo
         String path = getIntent().getStringExtra("picPath");
-        Log.i("path===  ",path);
+        //Log.i("path===  ",path);
         String result=MD5Util.md5HashCode(path);
 
         try {

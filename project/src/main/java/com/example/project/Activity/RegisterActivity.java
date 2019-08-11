@@ -52,13 +52,7 @@ public class RegisterActivity extends AppCompatActivity {
         DB DB =new DB(RegisterActivity.this);
         SQLiteDatabase database= DB.getReadableDatabase();
         username_input=username.getText().toString().trim();
-        Cursor cursor=database.query(DATABASE_USER_TABLE,
-                new String[]{"username"},
-                "username=?",
-                new String[]{username_input},
-                null,
-                null,
-                null);
+        Cursor cursor=database.query(DATABASE_USER_TABLE, new String[]{"username"}, "username=?", new String[]{username_input}, null, null, null);
 
         if(cursor.getCount()!=0){
             return true;

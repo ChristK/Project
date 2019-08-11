@@ -50,18 +50,24 @@
         android:layout_marginTop="20dp"
         android:layout_marginRight="10dp"
         android:layout_below="@id/cityname"/>
-    <Spinner
+    <Button
         android:id="@+id/type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/cityname"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="10dp"
-        android:spinnerMode="dialog"></Spinner>
-    <TextView
+        android:text="Type"
+        android:layout_toLeftOf="@+id/type_value"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"/>
+     <TextView
         android:id="@+id/type_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+         android:layout_below="@+id/cityname"
+         android:layout_marginTop="20dp"
+         android:text="Please select type"
+         android:layout_alignParentRight="true"
+         android:layout_marginRight="10dp"/>
 
     <TextView
         android:id="@+id/digest"

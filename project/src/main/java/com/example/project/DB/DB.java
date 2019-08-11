@@ -53,7 +53,6 @@ public class DB extends SQLiteOpenHelper {
     //typeTable sql
     String typeSql="create table "+DATABASE_TYPE_TABLE+"(" +
             "id integer primary key autoincrement," +
-            "Username text," +
             "Type text)";
 
     String dropType="drop table if exists "+DATABASE_TYPE_TABLE;
@@ -63,7 +62,7 @@ public class DB extends SQLiteOpenHelper {
     //name:数据库名称
     //factory:游标工厂
     //version:数据库版本号，并且版本号大于0
-    public static final int VERSION=7;
+    public static final int VERSION=8;
 
 
     public DB(Context context) {

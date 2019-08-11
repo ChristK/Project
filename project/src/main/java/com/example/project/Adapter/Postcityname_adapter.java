@@ -79,7 +79,7 @@ public class Postcityname_adapter extends BaseAdapter {
         byte[] photo=posts.get(position).getPhoto();
         Bitmap photoitmap = BitmapFactory.decodeByteArray(photo, 0, photo.length);
         viewHolder.photo.setImageBitmap(photoitmap);
-
+        //Log.i("test",posts.get(position).getType());
 
         SharedPreferences sharedPreferences= context.getSharedPreferences("geolocation", context.MODE_PRIVATE);
 
