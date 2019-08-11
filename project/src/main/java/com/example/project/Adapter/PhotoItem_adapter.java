@@ -18,6 +18,7 @@ import com.example.project.Util.MD5Util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -74,84 +75,52 @@ public class PhotoItem_adapter extends BaseAdapter {
 
         if(parent.getChildCount()==position)
         {
-            HashSet<String > hashSet=new HashSet<String>();
+
+            String p=paths.get(position);
+            Bitmap b=BitmapFactory.decodeFile(p);
+            viewHolder.photo_item.setImageBitmap(b);
+            HashSet<String> hashSet = new HashSet<String>();
             //里面就是正常的position
 
             //add db digest to hashset
-            DB db=new DB(context);
-            SQLiteDatabase database=db.getReadableDatabase();
-            Cursor cursor=database.query(DATABASE_POST_TABLE,new String[]{"digest"},null,null,null,null,null);
-            if(cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0){
-               do {
-                   String digest = cursor.getString(cursor.getColumnIndex("digest"));
-                   hashSet.add(digest);
-               }while (cursor.moveToNext());
+            DB db = new DB(context);
+            SQLiteDatabase database = db.getReadableDatabase();
+            Cursor cursor = database.query(DATABASE_POST_TABLE, new String[]{"digest"}, null, null, null, null, null);
+            if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
+                do {
+                    String digest = cursor.getString(cursor.getColumnIndex("digest"));
+                    hashSet.add(digest);
+                } while (cursor.moveToNext());
             }
             database.close();
 
+            String digest = null;
+            Iterator<String> iterator = paths.iterator();
 
-            String digest=null;
-            for(Iterator<String> iterator = paths.iterator();iterator.hasNext();){
-                String path=iterator.next();
-                ExifInterface exifInterface= null;
+            while (iterator.hasNext()){
+                String path = iterator.next();
+                Bitmap bitmap = BitmapFactory.decodeFile(path);
+               // viewHolder.photo_item.setImageBitmap(bitmap);
+                ExifInterface exifInterface = null;
                 try {
                     exifInterface = new ExifInterface(path);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
                 float[] LatLong = new float[2];
                 boolean hasLatLong = exifInterface.getLatLong(LatLong);
-
                 try {
-                    digest=MD5Util.md5HashCode(path);
+                    digest = MD5Util.md5HashCode(path);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-                if (hashSet.contains(digest)==true){
+                if (hashSet.contains(digest) == true) {
                     iterator.remove();
-                }else if (hasLatLong==false){
+                } else if (hasLatLong == false) {
                     iterator.remove();
                 }
-
-                Bitmap bitmap=BitmapFactory.decodeFile(path);
-                viewHolder.photo_item.setImageBitmap(bitmap);
-
-                //Log.i("Digest",digest);
             }
 
-            /**
-             *  Iterator<String> iterator=paths.iterator();
-             *             String digest_it=null;
-             *             while (iterator.hasNext()){
-             *                 String path_it=iterator.next();
-             *                 Bitmap bitmap=BitmapFactory.decodeFile(path_it);
-             *
-             *                 //viewHolder.photo_item.setImageBitmap(bitmap);
-             *
-             *                 ExifInterface exifInterface= null;
-             *                 try {
-             *                     exifInterface = new ExifInterface(path_it);
-             *                 } catch (IOException e) {
-             *                     e.printStackTrace();
-             *                 }
-             *
-             *                 float[] LatLong = new float[2];
-             *                 boolean hasLatLong = exifInterface.getLatLong(LatLong);
-             *
-             *                 try {
-             *                     digest_it=MD5Util.md5HashCode(path_it);
-             *                     if (hashSet.contains(digest_it) && hasLatLong==false){
-             *                         iterator.remove();
-             *                     }else {
-             *
-             *                         viewHolder.photo_item.setImageBitmap(bitmap);
-             *                     }
-             *                 } catch (FileNotFoundException e) {
-             *                     e.printStackTrace();
-             *                 }
-             *             }
-             */
 
 
             /**
@@ -203,4 +172,50 @@ public class PhotoItem_adapter extends BaseAdapter {
     public class viewHolder {
         public ImageView photo_item;
     }
+
+    private Iterator<String> getNew(){
+
+        HashSet<String> hashSet = new HashSet<String>();
+        //里面就是正常的position
+
+        //add db digest to hashset
+        DB db = new DB(context);
+        SQLiteDatabase database = db.getReadableDatabase();
+        Cursor cursor = database.query(DATABASE_POST_TABLE, new String[]{"digest"}, null, null, null, null, null);
+        if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
+            do {
+                String digest = cursor.getString(cursor.getColumnIndex("digest"));
+                hashSet.add(digest);
+            } while (cursor.moveToNext());
+        }
+        database.close();
+
+        String digest = null;
+        Iterator<String> iterator = paths.iterator();
+
+        while (iterator.hasNext()){
+            String path = iterator.next();
+            Bitmap bitmap = BitmapFactory.decodeFile(path);
+            ExifInterface exifInterface = null;
+            try {
+                exifInterface = new ExifInterface(path);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            float[] LatLong = new float[2];
+            boolean hasLatLong = exifInterface.getLatLong(LatLong);
+            try {
+                digest = MD5Util.md5HashCode(path);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            if (hashSet.contains(digest) == true) {
+                iterator.remove();
+            } else if (hasLatLong == false) {
+                iterator.remove();
+            }
+        }
+        return iterator;
+    }
+
 }

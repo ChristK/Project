@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
@@ -264,7 +265,7 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         });
 
 
-        popWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));    //要为popWindow设置一个背景才有效
+        popWindow.setBackgroundDrawable(new ColorDrawable(Color.GRAY));    //要为popWindow设置一个背景才有效
 
         int[] location=new int[2];
         v.getLocationOnScreen(location);
