@@ -225,14 +225,15 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
     private void addType(String type){
         ContentValues values = new ContentValues();
         values.put("Type", type);
-
         DB db=new DB(MomentActivity.this);
         SQLiteDatabase database=db.getReadableDatabase();
         long rowId=database.insert(DATABASE_TYPE_TABLE,null,values);
         if (rowId != -1) {
-            Toast.makeText(MomentActivity.this, "Add type Successful", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MomentActivity.this, "Successful Add new type:"+type, Toast.LENGTH_SHORT).show();
+            //list.add(type);
         }
         database.close();
+
     }
 
     private void initPop(final View v){
@@ -280,6 +281,7 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (list.get(position).equals("Add")){
                     buildEditDialog();
+                    popWindow.dismiss();
                 }
                 else {
                     String type=list.get(position).toString().trim();
@@ -351,8 +353,22 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         switch (item.getItemId()) {
             case R.id.submit:
                 if (photo.getDrawable() == null) {
-                    Toast.makeText(MomentActivity.this, "No comment or picture!", Toast.LENGTH_SHORT).show();
-                } else {
+                    Toast.makeText(MomentActivity.this, "No picture!", Toast.LENGTH_SHORT).show();
+                } else if (type_value.getText().equals("")){
+                    final android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(MomentActivity.this);
+                    dialog.setIcon(R.drawable.warning);
+                    dialog.setTitle("Warning");
+                    dialog.setMessage("Please selet type! ");
+                    dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.show();
+                }
+
+                else {
                     try {
                         String type=type_value.getText().toString().trim();
                         insertData(type);
@@ -466,9 +482,19 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
                     public void onClick(DialogInterface dialog, int which) {
                         String type = text.getText().toString();
                         int size = type.length();
-                        if (size == 0) {
-                            Toast.makeText(mContext, "Sorry!Please enter type", Toast.LENGTH_SHORT).show();
-                        } else if (size > 20) {
+                        if (list.contains(type)==true) {
+                            final android.app.AlertDialog.Builder dialog1 = new android.app.AlertDialog.Builder(MomentActivity.this);
+                            dialog1.setIcon(R.drawable.warning);
+                            dialog1.setTitle("Warning");
+                            dialog1.setMessage("Sorry!This type is exist!");
+                            dialog1.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            dialog1.show();
+                        } else if (size==0 || size > 20) {
                             Toast.makeText(mContext, "Sorry!The number of words you entered is out of range", Toast.LENGTH_SHORT).show();
                         } else {
                             addType(type);
