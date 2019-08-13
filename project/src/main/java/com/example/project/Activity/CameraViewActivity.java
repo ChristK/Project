@@ -148,8 +148,9 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
                     Point bestPreviewSizeValue1 = findBestPreviewSizeValue(parameters.getSupportedPreviewSizes());
                     parameters.setPreviewSize(bestPreviewSizeValue1.x, bestPreviewSizeValue1.y);
                     camera.setParameters(parameters);
-                    parameters.set("jpeg-quality", 90);
+                    parameters.set("jpeg-quality", 80);
                     camera.setParameters(parameters);
+                    camera.setDisplayOrientation(90);
                     parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
                     camera.autoFocus(null);
                     camera.takePicture(null,null,callback);

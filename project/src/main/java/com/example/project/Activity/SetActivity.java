@@ -68,6 +68,7 @@ public class SetActivity extends AppCompatActivity {
             case R.id.about:
                 break;
             case R.id.changePwd:
+                startActivity(new Intent(SetActivity.this,ChangePwdActivity.class));
                 break;
             case R.id.logout:
                 logout();

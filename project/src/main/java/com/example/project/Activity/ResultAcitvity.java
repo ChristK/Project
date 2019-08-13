@@ -320,7 +320,6 @@ public class ResultAcitvity extends AppCompatActivity {
     private void addType(String type){
         ContentValues values = new ContentValues();
         values.put("Type", type);
-
         DB db=new DB(ResultAcitvity.this);
         SQLiteDatabase database=db.getReadableDatabase();
         long rowId=database.insert(DATABASE_TYPE_TABLE,null,values);
@@ -477,6 +476,8 @@ public class ResultAcitvity extends AppCompatActivity {
 
         exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, dec2DMS(location.getLatitude()));    //把经度写进exif
         exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, dec2DMS(location.getLongitude()));     //把纬度写进exif
+        exif.setAttribute(ExifInterface.TAG_ORIENTATION, String.valueOf(ExifInterface.ORIENTATION_ROTATE_90));
+
         if (location.getLatitude() > 0)
             exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "N");
         else

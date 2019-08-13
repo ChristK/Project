@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
         if (currentTab == page) {
             return;
         }
-
         //获取fragment的页码
         Fragment fragment = fragments.get(page);
         //fragment事务
