@@ -77,7 +77,6 @@ public class ResultAcitvity extends AppCompatActivity {
      */
     public static final String DATABASE_USER_TABLE="table_user";
 
-
     private static final String DATABASE_POST_TABLE="table_post";
 
     private static final String DATABASE_TYPE_TABLE="table_type";
@@ -135,8 +134,6 @@ public class ResultAcitvity extends AppCompatActivity {
         Location location=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         locationUpdates(location);
 
-
-
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,7 +155,6 @@ public class ResultAcitvity extends AppCompatActivity {
                 finish();
             }
         });
-
     }
 
     private void initPop(View v){
@@ -189,7 +185,6 @@ public class ResultAcitvity extends AppCompatActivity {
                 bgAlpha(1f);
             }
         });
-
 
         popWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));    //要为popWindow设置一个背景才有效
 
@@ -223,6 +218,7 @@ public class ResultAcitvity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 if (list.get(position).equals("Add")){
                     Toast.makeText(mContext,"Cannot remove Add",Toast.LENGTH_SHORT).show();
+                    popWindow.dismiss();
                     //Log.i("Warning","Cannot remove this ");
                 }else {
 
@@ -241,6 +237,7 @@ public class ResultAcitvity extends AppCompatActivity {
                                 //Log.i("type",type);
                         database.delete(DATABASE_TYPE_TABLE,"Type=?", new String[]{type});
                         dialog.dismiss();
+                        popWindow.dismiss();
 
                     }
                 });

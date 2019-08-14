@@ -50,7 +50,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        initRadius();
+        init();
 
         SharedPreferences preferences = getSharedPreferences("first_open",MODE_PRIVATE);
         isFristUserAPP = preferences.getBoolean("is_first_open", true);
@@ -71,16 +71,22 @@ public class SplashActivity extends AppCompatActivity {
         },3000);
     }
 
-    private void initRadius(){
+    private void init(){
         if (isFristUserAPP){
             SharedPreferences mySharedPreferences= getSharedPreferences("radius", MODE_PRIVATE);
-
             SharedPreferences.Editor editor = mySharedPreferences.edit();
-
 
             int r=1000;
             editor.putString("radius",String.valueOf(r));
             editor.commit();
+
+
+            SharedPreferences mSharedPreferences= getSharedPreferences("max", MODE_PRIVATE);
+            SharedPreferences.Editor meditor = mSharedPreferences.edit();
+
+            int max=20;
+            meditor.putString("max",String.valueOf(max));
+            meditor.commit();
         }
     }
 }

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -120,14 +121,22 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
         final double currentlat=Double.parseDouble(lat.getText().toString().trim());
         final double currentlon=Double.parseDouble(lon.getText().toString().trim());
 
-
         final int count=inCircle(currentlat,currentlon);
+
+        SharedPreferences mSharedPreferences= getSharedPreferences("inCircle", MODE_PRIVATE);
+        SharedPreferences.Editor meditor = mSharedPreferences.edit();
+
+        meditor.putString("inCircle",String.valueOf(count));
+        meditor.commit();
 
         picture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences mSharedPreferences= getSharedPreferences("max", MODE_PRIVATE);
+                String limit=mSharedPreferences.getString("max",null);
+                int mlimit=Integer.parseInt(limit);
 
-                if (count>20){
+                if (count>mlimit){
                     final AlertDialog.Builder dialog = new AlertDialog.Builder(CameraViewActivity.this);
                     dialog.setIcon(R.drawable.warning);
                     dialog.setTitle("Warning");

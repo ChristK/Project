@@ -10,6 +10,8 @@ import android.location.Location;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.KeyListener;
+import android.text.method.NumberKeyListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,6 +30,7 @@ public class SetActivity extends AppCompatActivity {
     private Button logout;
     private TextView about;
     private TextView changePwd;
+    private TextView max;
     private TextView radius;
     private TextView count;
     private SharedPerencesUtil sp;
@@ -52,6 +55,12 @@ public class SetActivity extends AppCompatActivity {
         radius.setText(r+"m");
         int currentCount=getCount();
         count.setText(String.valueOf(currentCount));
+
+        SharedPreferences mSharedPreferences= getSharedPreferences("max", MODE_PRIVATE);
+
+        String limit=mSharedPreferences.getString("max",null);
+
+        max.setText(limit);
     }
 
     private void initControl() {
@@ -61,6 +70,7 @@ public class SetActivity extends AppCompatActivity {
         changePwd=(TextView)findViewById(R.id.changePwd);
         count=(TextView)findViewById(R.id.countPhoto);
         radius=(TextView)findViewById(R.id.radius);
+        max=(TextView)findViewById(R.id.max);
     }
 
     public void Operator(View view){
@@ -76,9 +86,37 @@ public class SetActivity extends AppCompatActivity {
             case R.id.radius:
                 setRadius();
                 break;
-
+            case R.id.max:
+                setLimit();
+                break;
             default:break;
         }
+    }
+
+    private void setLimit() {
+        final EditText text = new EditText(mContext);
+        text.setKeyListener(listener);
+        new AlertDialog.Builder(mContext).setTitle("Change Limit")
+                .setView(text)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String max = text.getText().toString();
+                        int size = max.length();
+                        if (size == 0) {
+                            Toast.makeText(mContext, "Sorry!Please enter a number", Toast.LENGTH_SHORT).show();
+                        } else if (max.contains("-")){
+                            Toast.makeText(mContext, "Sorry!Please enter a positive number!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            final int newmax=Integer.parseInt(max);
+                            changeLimit(newmax);
+                        }
+                    }
+
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     public void logout(){
@@ -92,6 +130,7 @@ public class SetActivity extends AppCompatActivity {
 
     private void setRadius() {
         final EditText text = new EditText(mContext);
+        text.setKeyListener(listener);
         new AlertDialog.Builder(mContext).setTitle("Change Ridus")
                 .setView(text)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -115,6 +154,32 @@ public class SetActivity extends AppCompatActivity {
                 .show();
     }
 
+    KeyListener listener = new NumberKeyListener() {
+
+        /**
+         * @return ：返回哪些希望可以被输入的字符,默认不允许输入
+         */
+        @Override
+        protected char[] getAcceptedChars() {
+            char[] chars = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+            return chars;
+//            return new char[0];
+        }
+
+        /**
+         * 0：无键盘,键盘弹不出来
+         * 1：英文键盘
+         * 2：模拟键盘
+         * 3：数字键盘
+         *
+         * @return
+         */
+        @Override
+        public int getInputType() {
+            return 3;
+        }
+    };
+
     public void changeRaidus(int r){
         SharedPreferences mySharedPreferences= getSharedPreferences("radius", MODE_PRIVATE);
 
@@ -125,6 +190,19 @@ public class SetActivity extends AppCompatActivity {
         radius.setText(String.valueOf(r)+"m");
 
         int new_Count=updateCount(r);
+        count.setText(String.valueOf(new_Count));
+    }
+
+    public void changeLimit(int limit){
+        SharedPreferences mySharedPreferences= getSharedPreferences("max", MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = mySharedPreferences.edit();
+
+        editor.putString("max",String.valueOf(limit));
+        editor.commit();
+        max.setText(String.valueOf(limit));
+
+        int new_Count=updateCount(limit);
         count.setText(String.valueOf(new_Count));
     }
 
@@ -206,7 +284,6 @@ public class SetActivity extends AppCompatActivity {
 
     private int updateCount(int r){
 
-
         SharedPreferences sharedPreferences= getSharedPreferences("geolocation", MODE_PRIVATE);
 
         // 使用getString方法获得value，注意第2个参数是value的默认值
@@ -220,5 +297,4 @@ public class SetActivity extends AppCompatActivity {
 
         return count;
     }
-
 }

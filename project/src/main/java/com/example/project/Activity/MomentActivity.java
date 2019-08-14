@@ -148,6 +148,16 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         locationUpdates(location);
 
+        final double currentlat=Double.parseDouble(lat.getText().toString().trim());
+        final double currentlon=Double.parseDouble(lon.getText().toString().trim());
+        final int count=inCircle(currentlat,currentlon);
+
+        SharedPreferences mSharedPreferences= getSharedPreferences("inCircle", MODE_PRIVATE);
+        SharedPreferences.Editor meditor = mSharedPreferences.edit();
+
+        meditor.putString("inCircle",String.valueOf(count));
+        meditor.commit();
+
 
         getAllPaths();
 
@@ -155,7 +165,6 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         adapter = new PhotoItem_adapter(MomentActivity.this, paths);
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(this);
-
 
         type.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -286,7 +295,6 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
                 else {
                     String type=list.get(position).toString().trim();
                     type_value.setText(type);
-                    addType(type);
                     popWindow.dismiss();
                 }
             }
@@ -350,6 +358,18 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+
+        SharedPreferences mySharedPreferences= getSharedPreferences("max", MODE_PRIVATE);
+        String limit=mySharedPreferences.getString("max",null);
+        int mlimit=Integer.parseInt(limit);
+
+
+        SharedPreferences mSharedPreferences= getSharedPreferences("inCircle", MODE_PRIVATE);
+        String count=mSharedPreferences.getString("inCircle",null);
+        int mcount=Integer.parseInt(count);
+
+
         switch (item.getItemId()) {
             case R.id.submit:
                 if (photo.getDrawable() == null) {
@@ -366,8 +386,20 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
                         }
                     });
                     dialog.show();
+                }else if (mcount>mlimit){
+                    final android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(MomentActivity.this);
+                    dialog.setIcon(R.drawable.warning);
+                    dialog.setTitle("Warning");
+                    dialog.setMessage("Sorry!This area photo is upper to limit");
+                    dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            MomentActivity.this.finish();
+                        }
+                    });
+                    dialog.show();
                 }
-
                 else {
                     try {
                         String type=type_value.getText().toString().trim();
@@ -434,6 +466,27 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         database.close();
     }
 
+    public int inCircle(double currentLat,double currentLon){
+        int count=0;
+        DB db=new DB(MomentActivity.this);
+        SQLiteDatabase database=db.getReadableDatabase();
+        Cursor cursor = database.query(DATABASE_POST_TABLE, new String[]{"latitude","longitude"}, null, null, null, null, null);
+        if (cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0) {
+            do {
+                double lat = cursor.getDouble(cursor.getColumnIndex("latitude"));
+                double lon = cursor.getDouble(cursor.getColumnIndex("longitude"));
+
+                float[] results = new float[1];
+                Location.distanceBetween(currentLat, currentLon, lat, lon, results);
+                float distanceInMeters = results[0];
+                if (distanceInMeters < 1000) {
+                    count++;
+                }
+            }while (cursor.moveToNext());
+        }
+        return count;
+    }
+
     public void locationUpdates(Location location) {
         if (location != null) {
             StringBuilder latitude = new StringBuilder();
@@ -473,6 +526,7 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     private void buildEditDialog() {
+
         final EditText text = new EditText(mContext);
         new AlertDialog.Builder(mContext).setTitle("Add Type")
                 .setView(text)
