@@ -76,6 +76,7 @@ public class SetActivity extends AppCompatActivity {
     public void Operator(View view){
         switch (view.getId()){
             case R.id.about:
+                startActivity(new Intent(SetActivity.this,AboutActivity.class));
                 break;
             case R.id.changePwd:
                 startActivity(new Intent(SetActivity.this,ChangePwdActivity.class));
@@ -141,13 +142,13 @@ public class SetActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String radius = text.getText().toString();
+                        final int r=Integer.parseInt(radius);
                         int size = radius.length();
                         if (size == 0) {
                             Toast.makeText(mContext, "Sorry!Please enter raidus", Toast.LENGTH_SHORT).show();
                         } else if (radius.contains("-")){
                             Toast.makeText(mContext, "Sorry!Please enter a positive number!", Toast.LENGTH_SHORT).show();
                         } else {
-                            final int r=Integer.parseInt(radius);
                             changeRaidus(r);
                         }
                     }
