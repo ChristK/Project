@@ -461,6 +461,7 @@ public class ResultAcitvity extends AppCompatActivity {
         long rowId = database.insert(DATABASE_POST_TABLE, null, values);
         if (rowId!=-1){
             Toast.makeText(this,"Post Successful!",Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(ResultAcitvity.this,PostActivity.class));
             finish();
         }
         database.close();

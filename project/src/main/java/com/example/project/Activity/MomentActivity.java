@@ -65,7 +65,7 @@ import java.util.Locale;
 
 public class MomentActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener {
 
-    private EditText post_value;
+
     private ImageView photo;
     private TextView cityName;
     private TextView lat;
@@ -202,7 +202,6 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
 
 
     private void init() {
-        post_value = (EditText) findViewById(R.id.post_et);
         photo = (ImageView) findViewById(R.id.photo);
         lat = (TextView) findViewById(R.id.lat);
         lon = (TextView) findViewById(R.id.longi);
@@ -215,6 +214,7 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     private void initList(){
+        list.add("Add");
 
         DB db=new DB(MomentActivity.this);
         SQLiteDatabase database=db.getReadableDatabase();
@@ -228,7 +228,6 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
             }while (cursor.moveToNext());
         }
         database.close();
-        list.add("Add");
     }
 
     private void addType(String type){
@@ -275,7 +274,7 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         });
 
 
-        popWindow.setBackgroundDrawable(new ColorDrawable(Color.GRAY));    //要为popWindow设置一个背景才有效
+        popWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));    //要为popWindow设置一个背景才有效
 
         int[] location=new int[2];
         v.getLocationOnScreen(location);
@@ -420,8 +419,6 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         DB DB = new DB(MomentActivity.this);
         SQLiteDatabase database = DB.getReadableDatabase();
 
-        //comment
-        String post_et = post_value.getText().toString().trim();
         //cityname
         String cityname = cityName.getText().toString().trim();
         //latitude
@@ -447,7 +444,6 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         //package
         ContentValues values = new ContentValues();
         values.put("username", username);
-        values.put("comment", post_et);
         values.put("cityname", cityname);
         values.put("latitude", latitude);
         values.put("longitude", longitude);

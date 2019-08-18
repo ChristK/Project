@@ -4,7 +4,7 @@ public class Post {
     private int _id;
     private String Username;
     private byte[] photo;
-    private String comment;
+
     private String type;
     private double latitude;
     private double longitude;
@@ -31,31 +31,28 @@ public class Post {
     }
 
 
-    public Post(int id,byte[] photo,String comment,String type,String date,String cityname){
+    public Post(int id,byte[] photo,String type,String date,String cityname){
         super();
         this._id=id;
         this.photo=photo;
-        this.comment=comment;
         this.type=type;
         this.cityname=cityname;
         this.date=date;
     }
 
-    public Post(String username,byte[] photo,String comment,String type,String date,String cityname){
+    public Post(String username,byte[] photo,String type,String date,String cityname){
         super();
         this.Username=username;
         this.photo=photo;
-        this.comment=comment;
         this.type=type;
         this.cityname=cityname;
         this.date=date;
     }
 
-    public Post(int id,String username,String comment,String type,String time,byte[] photo,double latitude,double longitude){
+    public Post(int id,String username,String type,String time,byte[] photo,double latitude,double longitude){
         super();
         this._id=id;
         this.Username=username;
-        this.comment=comment;
         this.type=type;
         this.date=time;
         this.photo=photo;
@@ -64,12 +61,11 @@ public class Post {
 
     }
 
-    public Post(int id,String username,byte[] photo,String comment,String type,double latitude,double longitude,String cityname,String date){
+    public Post(int id,String username,byte[] photo,String type,double latitude,double longitude,String cityname,String date){
         super();
         this._id=id;
         this.Username=username;
         this.photo=photo;
-        this.comment=comment;
         this.type=type;
         this.latitude=latitude;
         this.longitude=longitude;
@@ -100,14 +96,6 @@ public class Post {
 
     public void setPhoto(byte[] photo) {
         this.photo = photo;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
     }
 
     public String getType() {

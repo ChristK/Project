@@ -96,6 +96,7 @@ public class SetActivity extends AppCompatActivity {
     private void setLimit() {
         final EditText text = new EditText(mContext);
         text.setKeyListener(listener);
+        final String mcount=count.getText().toString().trim();
         new AlertDialog.Builder(mContext).setTitle("Change Limit")
                 .setView(text)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -108,6 +109,8 @@ public class SetActivity extends AppCompatActivity {
                             Toast.makeText(mContext, "Sorry!Please enter a number", Toast.LENGTH_SHORT).show();
                         } else if (max.contains("-")){
                             Toast.makeText(mContext, "Sorry!Please enter a positive number!", Toast.LENGTH_SHORT).show();
+                        } else if (Integer.parseInt(max)<Integer.parseInt(mcount)){
+                            Toast.makeText(mContext,"Sorry!You can't set limit less than count!",Toast.LENGTH_SHORT).show();
                         } else {
                             final int newmax=Integer.parseInt(max);
                             changeLimit(newmax);

@@ -109,7 +109,7 @@ public class MyPost_DetailActivity extends AppCompatActivity {
         String post_id=String.valueOf(id);
         DB DB = new DB(MyPost_DetailActivity.this);
         SQLiteDatabase database = DB.getReadableDatabase();
-        Cursor cursor = database.query(DATABASE_POST_TABLE, new String[]{"username","photos","cityname","time","type","type","comment","latitude","longitude"}, "_id=?", new String[]{post_id}, null, null, null);
+        Cursor cursor = database.query(DATABASE_POST_TABLE, new String[]{"username","photos","cityname","time","type","type","latitude","longitude"}, "_id=?", new String[]{post_id}, null, null, null);
         //Log.i("COUNT",cursor.getCount()+"");
         if (cursor.moveToNext()){
             String username=cursor.getString(cursor.getColumnIndex("username"));
@@ -117,7 +117,6 @@ public class MyPost_DetailActivity extends AppCompatActivity {
             String cityname = cursor.getString(cursor.getColumnIndex("cityname"));
             String time = cursor.getString(cursor.getColumnIndex("time"));
             String type = cursor.getString(cursor.getColumnIndex("type"));
-            String comment = cursor.getString(cursor.getColumnIndex("comment"));
             double lat=cursor.getDouble(cursor.getColumnIndex("latitude"));
             double lon=cursor.getDouble(cursor.getColumnIndex("longitude"));
 
@@ -129,7 +128,6 @@ public class MyPost_DetailActivity extends AppCompatActivity {
             cityname_tv.setText(cityname);
             time_tv.setText(time);
             type_tv.setText("Type:"+type);
-            comment_tv.setText(comment);
             lat_tv.setText("Latitude:"+lat);
             lon_tv.setText("Longitude"+lon);
         }

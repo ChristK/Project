@@ -50,7 +50,6 @@ public class MyPost_adapter extends BaseAdapter {
             viewHolder.id=(TextView)convertView.findViewById(R.id.post_id);
             viewHolder.id.setVisibility(View.GONE);
             viewHolder.cityname=(TextView)convertView.findViewById(R.id.cityname);
-            viewHolder.comment=(TextView)convertView.findViewById(R.id.comment);
             viewHolder.type=(TextView)convertView.findViewById(R.id.type);
             viewHolder.time=(TextView)convertView.findViewById(R.id.time);
             viewHolder.photo=(ImageView) convertView.findViewById(R.id.photo);
@@ -64,7 +63,6 @@ public class MyPost_adapter extends BaseAdapter {
         viewHolder.cityname.setText(posts.get(position).getCityname());
         viewHolder.type.setText("Type:"+posts.get(position).getType());
         viewHolder.time.setText(posts.get(position).getDate());
-        viewHolder.comment.setText(posts.get(position).getComment());
         byte[] photo=posts.get(position).getPhoto();
         Bitmap photoitmap = BitmapFactory.decodeByteArray(photo, 0, photo.length);
         viewHolder.photo.setImageBitmap(photoitmap);
@@ -74,6 +72,6 @@ public class MyPost_adapter extends BaseAdapter {
 
     private class ViewHolder{
         public ImageView photo;
-        public TextView cityname,comment,time,score,type,id;
+        public TextView cityname,time,type,id;
     }
 }

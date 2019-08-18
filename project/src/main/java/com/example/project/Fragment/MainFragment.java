@@ -207,19 +207,18 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
         DB db=new DB(getActivity());
         SQLiteDatabase database=db.getReadableDatabase();
         List<Post> listMaps = new ArrayList<Post>();
-        Cursor cursor=database.query(DATABASE_POST_TABLE,new String[]{"username","_id","time","comment","type","photos","longitude","latitude"},"cityname=?",new String[]{cityname},null,null,"time DESC","10");
+        Cursor cursor=database.query(DATABASE_POST_TABLE,new String[]{"username","_id","time","type","photos","longitude","latitude"},"cityname=?",new String[]{cityname},null,null,"time DESC","10");
         if(cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0){
             do{
                 id=cursor.getInt(cursor.getColumnIndex("_id"));
                 username=cursor.getString(cursor.getColumnIndex("username"));
                 time=cursor.getString(cursor.getColumnIndex("time"));
                 type=cursor.getString(cursor.getColumnIndex("type"));
-                comment=cursor.getString(cursor.getColumnIndex("comment"));
                 photo=cursor.getBlob(cursor.getColumnIndex("photos"));
                 lat=cursor.getDouble(cursor.getColumnIndex("latitude"));
                 lon=cursor.getDouble(cursor.getColumnIndex("longitude"));
 
-                Post post=new Post(id,username,comment,type,time,photo,lat,lon);
+                Post post=new Post(id,username,type,time,photo,lat,lon);
                 listMaps.add(post);
 
             }while (cursor.moveToNext());

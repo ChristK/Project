@@ -62,7 +62,7 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
         DB DB = new DB(PostActivity.this);
         SQLiteDatabase database = DB.getReadableDatabase();
         List<Post> listMaps = new ArrayList<Post>();
-        Cursor cursor = database.query(DATABASE_POST_TABLE, new String[]{"_id","photos","cityname","time","type","comment"}, "username=?", new String[]{username}, null, null, null);
+        Cursor cursor = database.query(DATABASE_POST_TABLE, new String[]{"_id","photos","cityname","time","type"}, "username=?", new String[]{username}, null, null, null);
         if(cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0)  {
            do{
                id=cursor.getInt(cursor.getColumnIndex("_id"));
@@ -70,9 +70,8 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
                cityname = cursor.getString(cursor.getColumnIndex("cityname"));
                time = cursor.getString(cursor.getColumnIndex("time"));
                type = cursor.getString(cursor.getColumnIndex("type"));
-               comment = cursor.getString(cursor.getColumnIndex("comment"));
 
-               Post post = new Post(id,photo, comment, type, time, cityname);
+               Post post = new Post(id,photo,type, time, cityname);
                listMaps.add(post);
 
            }while (cursor.moveToNext());

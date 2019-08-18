@@ -62,7 +62,6 @@ public class Postcityname_adapter extends BaseAdapter {
             viewHolder.id=(TextView)convertView.findViewById(R.id.id);
             viewHolder.id.setVisibility(View.GONE);
             viewHolder.username=(TextView)convertView.findViewById(R.id.username);
-            viewHolder.comment=(TextView)convertView.findViewById(R.id.comment);
             viewHolder.type=(TextView)convertView.findViewById(R.id.type);
             viewHolder.time=(TextView)convertView.findViewById(R.id.time);
             viewHolder.photo=(ImageView) convertView.findViewById(R.id.photo);
@@ -75,7 +74,6 @@ public class Postcityname_adapter extends BaseAdapter {
         viewHolder.username.setText(posts.get(position).getUsername());
         viewHolder.type.setText("Type:"+posts.get(position).getType());
         viewHolder.time.setText(posts.get(position).getDate());
-        viewHolder.comment.setText(posts.get(position).getComment());
         byte[] photo=posts.get(position).getPhoto();
         Bitmap photoitmap = BitmapFactory.decodeByteArray(photo, 0, photo.length);
         viewHolder.photo.setImageBitmap(photoitmap);
