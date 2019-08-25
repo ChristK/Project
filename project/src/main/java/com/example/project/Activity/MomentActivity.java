@@ -20,6 +20,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.ExifInterface;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -52,6 +53,7 @@ import com.example.project.DB.DB;
 import com.example.project.R;
 import com.example.project.Util.MD5Util;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -175,7 +177,6 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         });
 
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -433,10 +434,14 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         String username = sp.getString("name", null);
 
         //photo
-        final ByteArrayOutputStream os = new ByteArrayOutputStream();
-        Bitmap bitmap = ((BitmapDrawable) photo.getDrawable()).getBitmap();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
-        byte[] photo=os.toByteArray();
+        SharedPreferences mySharedPreferences= getSharedPreferences("imgPath", MODE_PRIVATE);
+
+        String path=mySharedPreferences.getString("imgPath",null);
+        Bitmap bitmap=getSmallBitmap(path);
+        ByteArrayOutputStream baos=new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] photo=baos.toByteArray();
+
 
         String result= MD5Util.md5HashCode(digest.getText().toString().trim());
 
@@ -458,9 +463,73 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
             startActivity(intent);
             Toast.makeText(this, "Post Successful!", Toast.LENGTH_SHORT).show();
             finish();
+            SharedPreferences.Editor editor = mySharedPreferences.edit();
+            editor.clear();
+            editor.commit();
         }
         database.close();
     }
+
+    private static int calculateInSampleSize(BitmapFactory.Options options,
+                                             int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            // Calculate ratios of height and width to requested height and
+            // width
+            final int heightRatio = Math.round((float) height
+                    / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+
+            // Choose the smallest ratio as inSampleSize value, this will
+            // guarantee
+            // a final image with both dimensions larger than or equal to the
+            // requested height and width.
+            inSampleSize = heightRatio < widthRatio ? widthRatio : heightRatio;
+        }
+
+        return inSampleSize;
+    }
+
+
+    public static Bitmap getSmallBitmap(String filePath) {
+
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, 480, 800);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+
+        Bitmap bm = BitmapFactory.decodeFile(filePath, options);
+        if(bm == null){
+            return  null;
+        }
+         ByteArrayOutputStream baos = null ;
+        try{
+            baos = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.JPEG, 30, baos);
+
+        }finally{
+            try {
+                if(baos != null)
+                    baos.close() ;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return bm ;
+
+    }
+
+
 
     public int inCircle(double currentLat,double currentLon){
         int count=0;
@@ -597,6 +666,11 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
         //Log.i("boolean",hasLatLong+"");
         if (hasLatLong) {
             photo.setImageBitmap(bitmap);
+            SharedPreferences mySharedPreferences= getSharedPreferences("imgPath", MODE_PRIVATE);
+            SharedPreferences.Editor editor = mySharedPreferences.edit();
+            editor.putString("imgPath",path);
+            editor.commit();
+
         }else {
             final android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(MomentActivity.this);
             dialog.setIcon(R.drawable.warning);

@@ -21,12 +21,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 public class SplashActivity extends AppCompatActivity {
-
-    private final String DATABASE_PATH = android.os.Environment
-            .getExternalStorageDirectory().getAbsolutePath() + "/databese";
-    public static final String DATABASE_NAME="DB";
 
     private Handler handler=new Handler(){
         @Override
@@ -82,7 +79,6 @@ public class SplashActivity extends AppCompatActivity {
                 handler.sendEmptyMessage(0);
             }
         },3000);
-
     }
 
     private void init(){
@@ -103,5 +99,7 @@ public class SplashActivity extends AppCompatActivity {
             meditor.commit();
         }
     }
+
+
 
 }

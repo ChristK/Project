@@ -22,6 +22,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.ExifInterface;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -44,6 +45,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -182,7 +184,6 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
         lat=(TextView)findViewById(R.id.lat);
         lon=(TextView)findViewById(R.id.lon);
     }
-
 
     public int inCircle(double currentLat,double currentLon){
         int count=0;

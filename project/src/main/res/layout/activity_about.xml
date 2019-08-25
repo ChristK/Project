@@ -72,7 +72,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
         android:textSize="18sp"
-        android:text="-Take photo and Post\n-Post photo by choosing mpbile album"/>
+        android:text="-Take photo and Post\n-Post photo by choosing mobile photo"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

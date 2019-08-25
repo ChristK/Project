@@ -438,10 +438,10 @@ public class ResultAcitvity extends AppCompatActivity {
         setExif(path,location);
         Log.i("Exif",path+"\n"+longitude+"\n"+latitude);
 
-        final ByteArrayOutputStream os = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
-
-        byte[] photo=os.toByteArray();
+        Bitmap bitmap=getSmallBitmap(path);
+        ByteArrayOutputStream baos=new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] photo=baos.toByteArray();
 
         //add a method to compute how much photo in this area and give different feedback to user
         //if upper to limit, have a dialog showed to tell user this area's photo is upper to limit,please go to anther place.
@@ -465,6 +465,65 @@ public class ResultAcitvity extends AppCompatActivity {
             finish();
         }
         database.close();
+    }
+
+    private static int calculateInSampleSize(BitmapFactory.Options options,
+                                             int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            // Calculate ratios of height and width to requested height and
+            // width
+            final int heightRatio = Math.round((float) height
+                    / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+
+            // Choose the smallest ratio as inSampleSize value, this will
+            // guarantee
+            // a final image with both dimensions larger than or equal to the
+            // requested height and width.
+            inSampleSize = heightRatio < widthRatio ? widthRatio : heightRatio;
+        }
+
+        return inSampleSize;
+    }
+
+
+    public static Bitmap getSmallBitmap(String filePath) {
+
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, 480, 800);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+
+        Bitmap bm = BitmapFactory.decodeFile(filePath, options);
+        if(bm == null){
+            return  null;
+        }
+        ByteArrayOutputStream baos = null ;
+        try{
+            baos = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.JPEG, 30, baos);
+
+        }finally{
+            try {
+                if(baos != null)
+                    baos.close() ;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return bm ;
+
     }
 
 

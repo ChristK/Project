@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import com.example.project.DB.DB;
 import com.example.project.R;
 import com.example.project.Util.MD5Util;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.Picasso;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -73,8 +75,8 @@ public class PhotoItem_adapter extends BaseAdapter {
             viewHolder = (viewHolder) convertView.getTag();
         }
 
-        if(parent.getChildCount()==position)
-        {
+        if(parent.getChildCount()==position) {
+            //里面就是正常的position
 
             String p=paths.get(position);
             Bitmap b=BitmapFactory.decodeFile(p);
@@ -100,7 +102,7 @@ public class PhotoItem_adapter extends BaseAdapter {
             while (iterator.hasNext()){
                 String path = iterator.next();
                 Bitmap bitmap = BitmapFactory.decodeFile(path);
-               // viewHolder.photo_item.setImageBitmap(bitmap);
+                // viewHolder.photo_item.setImageBitmap(bitmap);
                 ExifInterface exifInterface = null;
                 try {
                     exifInterface = new ExifInterface(path);
@@ -120,102 +122,11 @@ public class PhotoItem_adapter extends BaseAdapter {
                     iterator.remove();
                 }
             }
-
-
-
-            /**
-             *     String path = paths.get(position);
-             *             Bitmap bitmap=BitmapFactory.decodeFile(path);
-             *
-             *             viewHolder.photo_item.setImageBitmap(bitmap);
-             *
-             *             String result= null;
-             *             try {
-             *                 result = MD5Util.md5HashCode(path);
-             *             } catch (FileNotFoundException e) {
-             *                 e.printStackTrace();
-             *             }
-             *             hashSet.add(result);
-             *
-             *             Log.i("Result",result);
-             *
-             *             Log.i("Path",path);
-             *             //iterator all path to digest and compare with hash set
-             *
-             *             DB db=new DB(context);
-             *             SQLiteDatabase database=db.getReadableDatabase();
-             *             Cursor cursor=database.query(DATABASE_POST_TABLE,new String[]{"digest"},null,null,null,null,null);
-             *             Log.i("cursor",cursor.getCount()+"");
-             *             if(cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0){
-             *                 do {
-             *                    String digest = cursor.getString(cursor.getColumnIndex("digest"));
-             *
-             *                     Log.i("digest",digest);
-             *                     Log.i("Contain",hashSet.contains(digest)+"");
-             *                     if (hashSet.contains(digest)==true){
-             *                         paths.remove(path);
-             *                         Log.i("Contain",hashSet.contains(digest)+"");
-             *                     }else {
-             *                         viewHolder.photo_item.setImageBitmap(bitmap);
-             *                         Log.i("Contian","true");
-             *                     }
-             *                 }while (cursor.moveToNext());
-             *             }
-             *             database.close();
-             */
-
         }
-
         return convertView;
     }
 
     public class viewHolder {
         public ImageView photo_item;
     }
-
-    private Iterator<String> getNew(){
-
-        HashSet<String> hashSet = new HashSet<String>();
-        //里面就是正常的position
-
-        //add db digest to hashset
-        DB db = new DB(context);
-        SQLiteDatabase database = db.getReadableDatabase();
-        Cursor cursor = database.query(DATABASE_POST_TABLE, new String[]{"digest"}, null, null, null, null, null);
-        if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
-            do {
-                String digest = cursor.getString(cursor.getColumnIndex("digest"));
-                hashSet.add(digest);
-            } while (cursor.moveToNext());
-        }
-        database.close();
-
-        String digest = null;
-        Iterator<String> iterator = paths.iterator();
-
-        while (iterator.hasNext()){
-            String path = iterator.next();
-            Bitmap bitmap = BitmapFactory.decodeFile(path);
-            ExifInterface exifInterface = null;
-            try {
-                exifInterface = new ExifInterface(path);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            float[] LatLong = new float[2];
-            boolean hasLatLong = exifInterface.getLatLong(LatLong);
-            try {
-                digest = MD5Util.md5HashCode(path);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            if (hashSet.contains(digest) == true) {
-                iterator.remove();
-            } else if (hasLatLong == false) {
-                iterator.remove();
-            }
-        }
-        return iterator;
-    }
-
 }
