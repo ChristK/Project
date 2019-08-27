@@ -57,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
                 break;
             case R.id.login:;
                 login();
+                finish();
                 break;
 
         }

@@ -4,7 +4,6 @@ public class Post {
     private int _id;
     private String Username;
     private byte[] photo;
-
     private String type;
     private double latitude;
     private double longitude;
@@ -30,6 +29,9 @@ public class Post {
         this.photo=photo;
     }
 
+    public Post(){
+
+    }
 
     public Post(int id,byte[] photo,String type,String date,String cityname){
         super();
