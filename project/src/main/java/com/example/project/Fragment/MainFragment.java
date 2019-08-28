@@ -20,8 +20,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -56,7 +54,7 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
     private TextView cityName;
     private List<Address> addresses;
     private int id;
-    private String username,time,comment,type;
+    private String username,time,type;
     private double lat,lon;
     private byte[] photo;
     private Postcityname_adapter postcityname_adapter;

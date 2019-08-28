@@ -3,25 +3,16 @@ package com.example.project.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.project.Fragment.MainFragment;
 import com.example.project.Fragment.UserFragment;
 import com.example.project.R;
 import com.example.project.Util.SharedPerencesUtil;
 
-
-import java.io.File;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {

@@ -108,6 +108,8 @@ public class SetActivity extends AppCompatActivity {
                         int size = max.length();
                         if (size == 0) {
                             Toast.makeText(mContext, "Sorry!Please enter a number", Toast.LENGTH_SHORT).show();
+                        }else if (size>3){
+                            Toast.makeText(mContext,"Sorry!The number is too large",Toast.LENGTH_SHORT).show();
                         } else if (max.contains("-")){
                             Toast.makeText(mContext, "Sorry!Please enter a positive number!", Toast.LENGTH_SHORT).show();
                         } else if (Integer.parseInt(max)<Integer.parseInt(mcount)){
@@ -146,6 +148,8 @@ public class SetActivity extends AppCompatActivity {
                         int size = radius.length();
                         if (size == 0) {
                             Toast.makeText(mContext, "Sorry!Please enter raidus", Toast.LENGTH_SHORT).show();
+                        } else if (size>5){
+                            Toast.makeText(mContext,"Sorry!The number is too large",Toast.LENGTH_SHORT).show();
                         } else if (radius.contains("-")){
                             Toast.makeText(mContext, "Sorry!Please enter a positive number!", Toast.LENGTH_SHORT).show();
                         } else {
@@ -206,9 +210,7 @@ public class SetActivity extends AppCompatActivity {
         editor.commit();
         max.setText(String.valueOf(limit));
 
-        int new_Count=updateCount(limit);
-        count.setText(String.valueOf(new_Count));
-    }
+       }
 
     public int inCircle(double currentLat,double currentLon){
         SharedPreferences mySharedPreferences= getSharedPreferences("radius", MODE_PRIVATE);
@@ -255,7 +257,7 @@ public class SetActivity extends AppCompatActivity {
 
         final int count=inCircle(currentlat,currentlon);
 
-        Log.i("count",count+"");
+        //Log.i("count",count+"");
         return count;
     }
 

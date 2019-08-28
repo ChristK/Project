@@ -21,6 +21,7 @@ import com.example.project.R;
 public class MyPost_DetailActivity extends AppCompatActivity {
 
     /**
+     *
      * Table name
      */
     //userTable
@@ -129,7 +130,7 @@ public class MyPost_DetailActivity extends AppCompatActivity {
             time_tv.setText(time);
             type_tv.setText("Type:"+type);
             lat_tv.setText("Latitude:"+lat);
-            lon_tv.setText("Longitude"+lon);
+            lon_tv.setText("Longitude:"+lon);
         }
         database.close();
     }

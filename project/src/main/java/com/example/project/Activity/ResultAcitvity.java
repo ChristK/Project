@@ -303,11 +303,11 @@ public class ResultAcitvity extends AppCompatActivity {
         DB db=new DB(ResultAcitvity.this);
         SQLiteDatabase database=db.getReadableDatabase();
         Cursor cursor=database.query(DATABASE_TYPE_TABLE,new String[]{"type"},null,null,null,null,null);
-        Log.i("Cursor",cursor.getCount()+"");
+        //Log.i("Cursor",cursor.getCount()+"");
         if(cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0){
             do {
                 String type = cursor.getString(cursor.getColumnIndex("Type"));
-                Log.i("Type",type);
+                //Log.i("Type",type);
                 list.add(type);
             }while (cursor.moveToNext());
         }
@@ -436,7 +436,7 @@ public class ResultAcitvity extends AppCompatActivity {
         }
 
         setExif(path,location);
-        Log.i("Exif",path+"\n"+longitude+"\n"+latitude);
+        //Log.i("Exif",path+"\n"+longitude+"\n"+latitude);
 
         Bitmap bitmap=getSmallBitmap(path);
         ByteArrayOutputStream baos=new ByteArrayOutputStream();
@@ -570,7 +570,7 @@ public class ResultAcitvity extends AppCompatActivity {
 
 
 
-            SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss",Locale.getDefault());
             String date = sDateFormat.format(new java.util.Date());
             time.setText(date);
             time.setVisibility(View.GONE);

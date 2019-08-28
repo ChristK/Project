@@ -91,7 +91,7 @@ public class ChangePwdActivity extends AppCompatActivity {
         String oldpassword=old_pwd.getText().toString().trim();
 
             if (isExist(username)==true){
-                if (pwdIsExist(oldpassword)){
+                if (pwdIsExist(oldpassword)==true){
                     ContentValues values=new ContentValues();
                     values.put("Password", newpassword_input);
                     int line=database.update(DATABASE_USER_TABLE,values,"Username=?",new String[]{username});
@@ -100,10 +100,8 @@ public class ChangePwdActivity extends AppCompatActivity {
                         finish();
                     }
                 }else {
-                    Toast.makeText(ChangePwdActivity.this,"Old password is erroe!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChangePwdActivity.this,"Old password is error!",Toast.LENGTH_SHORT).show();
                 }
-
-
             }else {
                 Toast.makeText(ChangePwdActivity.this,"Username is not Exist!",Toast.LENGTH_SHORT).show();
             }

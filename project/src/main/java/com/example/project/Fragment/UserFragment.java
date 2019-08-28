@@ -14,11 +14,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.project.Activity.CommentActivity;
 import com.example.project.Activity.PostActivity;
 import com.example.project.Activity.SetActivity;
 import com.example.project.R;
-import com.example.project.Util.SharedPerencesUtil;
 
 import static android.content.Context.MODE_PRIVATE;
 
