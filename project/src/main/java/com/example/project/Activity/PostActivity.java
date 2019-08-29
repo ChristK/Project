@@ -79,6 +79,7 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
             //Log.i("SQl","No value");
             Toast.makeText(PostActivity.this, "No post history", Toast.LENGTH_SHORT).show();
         }
+        database.close();
         return listMaps;
     }
 

@@ -203,6 +203,7 @@ public class CameraViewActivity extends AppCompatActivity  implements SurfaceHol
                 }
             }while (cursor.moveToNext());
         }
+        database.close();
         return count;
     }
 

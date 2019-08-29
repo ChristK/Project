@@ -549,6 +549,7 @@ public class MomentActivity extends AppCompatActivity implements AdapterView.OnI
                 }
             }while (cursor.moveToNext());
         }
+        database.close();
         return count;
     }
 

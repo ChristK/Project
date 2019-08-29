@@ -284,7 +284,7 @@ public class SetActivity extends AppCompatActivity {
                 }
             }while (cursor.moveToNext());
         }
-        db.close();
+        database.close();
         return count;
     }
 

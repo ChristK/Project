@@ -223,6 +223,7 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
         }else {
            warning.setText("No post in this city");
         }
+        database.close();
         return listMaps;
     }
 

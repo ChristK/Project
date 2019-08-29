@@ -68,6 +68,7 @@ public class ChangePwdActivity extends AppCompatActivity {
         if(cursor.getCount()!=0){
             return true;
         }
+        database.close();
         return false;
     }
     public boolean pwdIsExist(String old_pwd){
@@ -80,6 +81,7 @@ public class ChangePwdActivity extends AppCompatActivity {
         if(cursor.getCount()!=0){
             return true;
         }
+        database.close();
         return false;
     }
 

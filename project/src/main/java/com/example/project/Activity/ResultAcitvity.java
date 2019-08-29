@@ -570,7 +570,7 @@ public class ResultAcitvity extends AppCompatActivity {
 
 
 
-            SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss",Locale.getDefault());
+            SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.getDefault());
             String date = sDateFormat.format(new java.util.Date());
             time.setText(date);
             time.setVisibility(View.GONE);

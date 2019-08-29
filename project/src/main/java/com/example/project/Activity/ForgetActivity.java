@@ -54,6 +54,7 @@ public class ForgetActivity extends AppCompatActivity {
         if(cursor.getCount()!=0){
             return true;
         }
+        database.close();
         return false;
     }
 
